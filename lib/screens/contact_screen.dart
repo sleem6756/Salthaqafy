@@ -29,7 +29,7 @@ class _ContactScreenState extends State<ContactScreen> {
       final message = _messageController.text;
       final Uri emailUri = Uri(
         scheme: 'mailto',
-        path: 'info@salthaqafy.com',
+        path: 'althaqafys@gmail.com',
         queryParameters: {
           'subject': 'رسالة من $name',
           'body': 'البريد الإلكتروني: $email\n\n$message',

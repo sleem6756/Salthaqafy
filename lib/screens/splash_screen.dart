@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'main_screen.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -77,6 +78,15 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
     }
   }
 
+  Future<void> _launchShannan() async {
+    final Uri url = Uri.parse('https://salthaqafy.com/privacy-policy-2/');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      await launchUrl(url);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,13 +149,17 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'جميع الحقوق محفوظة لدي موقع كتب دكتور سالم الثقفي',
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey[600],
+            child: InkWell(
+              onTap: _launchShannan,
+              child: Text(
+                'جميع الحقوق محفوظة لدي موقع كتب دكتور سالم الثقفي',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
           ),
         ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/book.dart';
-import '../models/category.dart';
+import '../model/book.dart';
+import '../model/category.dart';
 import '../services/api_service.dart';
 import '../utils/logger.dart';
 

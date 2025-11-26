@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import '../models/book.dart';
-import '../models/category.dart';
+import '../model/book.dart';
+import '../model/category.dart';
 import '../utils/endpoints.dart';
 
 class ApiService {

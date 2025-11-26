@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../models/book.dart';
+import '../model/book.dart';
 import '../utils/logger.dart';
 
 class BookCard extends StatelessWidget {

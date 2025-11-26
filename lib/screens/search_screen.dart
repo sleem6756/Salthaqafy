@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'dart:async';
 import '../providers/book_provider.dart';
-import '../models/book.dart';
+import '../model/book.dart';
 import '../widgets/book_card.dart';
 import '../widgets/shimmer_loading.dart';
 
@@ -104,7 +104,7 @@ class _SearchScreenState extends State<SearchScreen> {
             _filteredBooks = List.from(bookProvider.books);
           }
 
-          final displayBooks = _searchController.text.isNotEmpty ? _filteredBooks : bookProvider.books;
+          final List<Book> displayBooks = _searchController.text.isNotEmpty ? _filteredBooks : bookProvider.books;
 
           return Column(
             children: [

@@ -7,7 +7,7 @@ class AppColors {
         .themeNotifier
         .value; // Assuming themeNotifier is correctly initialized and accessible
     if (themeMode == defaultTheme) {
-      return const Color(0xffcfad65);
+      return const Color.fromARGB(134, 147, 148, 146);
     } else if (themeMode == lightTheme) {
       return Colors.white; // Use predefined white color
     } else {
@@ -20,7 +20,7 @@ class AppColors {
         .themeNotifier
         .value; // Assuming themeNotifier is correctly initialized and accessible
     if (themeMode == defaultTheme) {
-      return const Color(0xff6a564f);
+      return const Color.fromARGB(134, 147, 148, 146);
     } else if (themeMode == lightTheme) {
       return const Color.fromARGB(
         255,

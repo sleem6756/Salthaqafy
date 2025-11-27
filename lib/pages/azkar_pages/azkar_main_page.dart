@@ -1,14 +1,14 @@
 import 'package:althaqafy/cubit/azkar_cubit/azkar_cubit.dart';
 import 'package:althaqafy/cubit/azkar_cubit/azkar_state.dart';
+import 'package:althaqafy/model/azkar_model/azkar_model/azkar_model.dart';
 import 'package:althaqafy/pages/azkar_pages/fav_azkar_page.dart';
+import 'package:althaqafy/pages/azkar_pages/zekr_page.dart';
 import 'package:althaqafy/pages/ruqiya_pages/ruqiya_page.dart';
+import 'package:althaqafy/utils/app_style.dart';
 import 'package:althaqafy/widgets/reciturs_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../constants.dart';
-import '../../model/azkar_model/azkar_model/azkar_model.dart';
-import '../../utils/app_style.dart';
-import 'zekr_page.dart';
 
 class AzkarPage extends StatefulWidget {
   const AzkarPage({super.key});
@@ -62,103 +62,115 @@ class _AzkarPageState extends State<AzkarPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.kPrimaryColor,
-      appBar: AppBar(
-        centerTitle: true,
-        iconTheme: IconThemeData(
-          color: AppStyles.styleCairoMedium15white(context).color,
-        ),
-        backgroundColor: AppColors.kSecondaryColor,
-        title: _isSearching
-            ? TextField(
-                controller: _searchController,
-                onChanged: _filterAzkar,
-                style: AppStyles.styleCairoMedium15white(context),
-                decoration: InputDecoration(
-                  hintText: 'إبحث عن ذكر ...',
-                  hintStyle: AppStyles.styleCairoMedium15white(context),
-                  border: InputBorder.none,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        backgroundColor: AppColors.kPrimaryColor,
+        appBar: AppBar(
+          centerTitle: true,
+          iconTheme: IconThemeData(
+            color: AppStyles.styleCairoMedium15white(context).color,
+          ),
+          backgroundColor: AppColors.kSecondaryColor,
+          title: _isSearching
+              ? TextField(
+                  controller: _searchController,
+                  onChanged: _filterAzkar,
+                  style: AppStyles.styleCairoMedium15white(context),
+                  decoration: InputDecoration(
+                    hintText: 'إبحث عن ذكر ...',
+                    hintStyle: AppStyles.styleCairoMedium15white(context),
+                    border: InputBorder.none,
+                  ),
+                  autofocus: true,
+                )
+              : Text(
+                  'الأذكار',
+                  style: AppStyles.styleDiodrumArabicbold20(context),
                 ),
-                autofocus: true,
-              )
-            : Text(
-                'الأذكار',
-                style: AppStyles.styleDiodrumArabicbold20(context),
-              ),
-        actions: [
-          // Ruqiya Navigation Button
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: () {
-                Navigator.of(
-                  context,
-                ).push(MaterialPageRoute(builder: (_) => const RuqiyaPage()));
-              },
-              child: Text(
-                'الرقية',
-                style: AppStyles.styleCairoMedium15white(context),
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                onTap: _toggleSearch,
+                child: Icon(_isSearching ? Icons.close : Icons.search),
               ),
             ),
+          ],
+          bottom: TabBar(
+            indicatorColor: Colors.white,
+            labelStyle: AppStyles.styleDiodrumArabicbold20(context),
+            unselectedLabelStyle: AppStyles.styleDiodrumArabicbold20(
+              context,
+            ).copyWith(color: Colors.grey),
+            tabs: const [
+              Tab(text: "الأذكار"),
+              Tab(text: "الرقية"),
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: _toggleSearch,
-              child: Icon(_isSearching ? Icons.close : Icons.search),
-            ),
-          ),
-        ],
-      ),
-      body: BlocBuilder<AzkarCubit, AzkarState>(
-        builder: (context, state) {
-          if (state is AzkarLoading) {
-            return const Center(
-              child: CircularProgressIndicator(color: Colors.white),
-            );
-          } else if (state is AzkarLoaded) {
-            final azkarToDisplay = _isSearching ? filteredAzkar : state.azkar;
+        ),
+        body: TabBarView(
+          children: [
+            // First Tab: Azkar List
+            BlocBuilder<AzkarCubit, AzkarState>(
+              builder: (context, state) {
+                if (state is AzkarLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator(color: Colors.white),
+                  );
+                } else if (state is AzkarLoaded) {
+                  final azkarToDisplay = _isSearching
+                      ? filteredAzkar
+                      : state.azkar;
 
-            return ListView.builder(
-              itemCount: azkarToDisplay.length + 1, // +1 for extra item
-              itemBuilder: (context, index) {
-                if (index == 0) {
-                  // Add the extra item
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => FavAzkarPage()),
+                  return ListView.builder(
+                    itemCount: azkarToDisplay.length + 1, // +1 for extra item
+                    itemBuilder: (context, index) {
+                      if (index == 0) {
+                        // Add the extra item
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => FavAzkarPage(),
+                              ),
+                            );
+                          },
+                          child: const RecitursItem(title: "أذكاري المفضلة"),
+                        );
+                      }
+
+                      final actualIndex =
+                          index - 1; // Adjust index for azkar list
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ZekrPage(
+                                zekerCategory:
+                                    azkarToDisplay[actualIndex].category!,
+                                zekerList: azkarToDisplay[actualIndex].array!,
+                              ),
+                            ),
+                          );
+                        },
+                        child: RecitursItem(
+                          title: "${azkarToDisplay[actualIndex].category}",
+                        ),
                       );
                     },
-                    child: const RecitursItem(title: "أذكاري المفضلة"),
                   );
+                } else if (state is AzkarError) {
+                  return const Center(child: Text("حدث خطأ في تحميل الأذكار"));
+                } else {
+                  return Container();
                 }
-
-                final actualIndex = index - 1; // Adjust index for azkar list
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => ZekrPage(
-                          zekerCategory: azkarToDisplay[actualIndex].category!,
-                          zekerList: azkarToDisplay[actualIndex].array!,
-                        ),
-                      ),
-                    );
-                  },
-                  child: RecitursItem(
-                    title: "${azkarToDisplay[actualIndex].category}",
-                  ),
-                );
               },
-            );
-          } else if (state is AzkarError) {
-            return const Center(child: Text("حدث خطأ في تحميل الأذكار"));
-          } else {
-            return Container();
-          }
-        },
+            ),
+            // Second Tab: Ruqiya Page
+            const RuqiyaPage(),
+          ],
+        ),
       ),
     );
   }

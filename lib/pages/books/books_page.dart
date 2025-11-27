@@ -5,7 +5,7 @@ import '../../widgets/book_card.dart';
 import '../../widgets/shimmer_loading.dart';
 import 'search_screen.dart';
 import 'about_screen.dart';
-import 'contact_screen.dart';
+import '../../constants.dart';
 
 class BooksPage extends StatefulWidget {
   const BooksPage({super.key});
@@ -58,29 +58,29 @@ class _BooksPageState extends State<BooksPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.kPrimaryColor,
       appBar: AppBar(
         automaticallyImplyLeading: false, // Remove back button
+        leadingWidth: 100, // Allocate space for two icons
+        leading: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            IconButton(
+              icon: const Icon(Icons.search),
+              onPressed: _openSearchPage,
+            ),
+            IconButton(
+              icon: const Icon(Icons.info),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const AboutScreen()),
+              ),
+            ),
+          ],
+        ),
         title: const Text('الكتب'),
         centerTitle: true,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.info),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AboutScreen()),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.contact_mail),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const ContactScreen()),
-            ),
-          ),
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: _openSearchPage,
-          ),
           IconButton(icon: const Icon(Icons.refresh), onPressed: _refreshBooks),
         ],
       ),
@@ -123,7 +123,12 @@ class _BooksPageState extends State<BooksPage> {
                     ? const Center(child: Text('لا توجد كتب'))
                     : ListView.builder(
                         controller: _scrollController,
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.only(
+                          left: 16,
+                          right: 16,
+                          top: 16,
+                          bottom: 100, // Added padding for bottom bar
+                        ),
                         itemCount:
                             bookProvider.books.length +
                             (bookProvider.isLoadingMore ? 1 : 0),

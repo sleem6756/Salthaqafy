@@ -26,51 +26,36 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
       create: (context) =>
           RuqiyaCubit()
             ..loadRuqiya(), // Ensure cubit is provided and loadRuqiya is called
-      child: Scaffold(
-        backgroundColor: AppColors.kPrimaryColor,
-        appBar: AppBar(
-          automaticallyImplyLeading: false, // Remove back button
-          iconTheme: IconThemeData(
-            color: AppStyles.styleDiodrumArabicbold20(context).color,
-          ),
-          backgroundColor: AppColors.kSecondaryColor,
-          centerTitle: true,
-          title: Text(
-            "الرقية الشرعية",
-            style: AppStyles.styleDiodrumArabicbold20(context),
-          ),
-        ),
-        body: BlocBuilder<RuqiyaCubit, RuqiyaState>(
-          builder: ((context, state) {
-            if (state is RuqiyaLoading) {
-              return const Center(
-                child: CircularProgressIndicator(color: Colors.white),
-              );
-            } else if (state is RuqiyaLoaded) {
-              return Padding(
-                padding: const EdgeInsets.all(15),
-                child: ListView.builder(
-                  itemCount: state.ruqiya.length,
-                  itemBuilder: (context, index) {
-                    return RuqiyaItem(
-                      text: state.ruqiya[index].text!,
-                      info: state.ruqiya[index].info!,
-                    );
-                  },
-                ),
-              );
-            } else if (state is RuqiyaError) {
-              return Center(
-                child: Text(
-                  state.error,
-                  style: const TextStyle(color: Colors.white),
-                ),
-              );
-            } else {
-              return Container();
-            }
-          }),
-        ),
+      child: BlocBuilder<RuqiyaCubit, RuqiyaState>(
+        builder: ((context, state) {
+          if (state is RuqiyaLoading) {
+            return const Center(
+              child: CircularProgressIndicator(color: Colors.white),
+            );
+          } else if (state is RuqiyaLoaded) {
+            return Padding(
+              padding: const EdgeInsets.all(15),
+              child: ListView.builder(
+                itemCount: state.ruqiya.length,
+                itemBuilder: (context, index) {
+                  return RuqiyaItem(
+                    text: state.ruqiya[index].text!,
+                    info: state.ruqiya[index].info!,
+                  );
+                },
+              ),
+            );
+          } else if (state is RuqiyaError) {
+            return Center(
+              child: Text(
+                state.error,
+                style: const TextStyle(color: Colors.white),
+              ),
+            );
+          } else {
+            return Container();
+          }
+        }),
       ),
     );
   }

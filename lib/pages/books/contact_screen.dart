@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../constants.dart';
 
 class ContactScreen extends StatefulWidget {
   const ContactScreen({super.key});
@@ -87,7 +88,12 @@ class _ContactScreenState extends State<ContactScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('تواصل معنا'), centerTitle: true),
+      backgroundColor: AppColors.kPrimaryColor,
+      appBar: AppBar(
+        automaticallyImplyLeading: false, // Remove back button
+        title: const Text('تواصل معنا'),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -322,6 +328,9 @@ class _ContactScreenState extends State<ContactScreen> {
             ),
 
             const SizedBox(height: 32),
+
+            // Bottom padding for navigation bar
+            const SizedBox(height: 100),
           ],
         ),
       ),

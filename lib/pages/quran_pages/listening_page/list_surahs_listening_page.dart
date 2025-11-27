@@ -67,9 +67,11 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
 
       artUri: null,
     );
-    setState(() {
-      _isLoaded = true;
-    });
+    if (mounted) {
+      setState(() {
+        _isLoaded = true;
+      });
+    }
   }
 
   void updateTappedSurahName(int surahIndex) {

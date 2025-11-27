@@ -11,7 +11,7 @@ class Sho3baPage extends StatelessWidget {
 
   final List<RecitersModel> reciters = const [
     RecitersModel(
-      url: 'https://download.quranicaudio.com/quran/abdurrashid_sufi_shu3ba//',
+      url: 'https://download.quranicaudio.com/quran/abdurrashid_sufi_shu3ba/',
       name: 'عبدالرشيد صوفي برواية شعبة   ',
       zeroPaddingSurahNumber: true,
     ),
@@ -23,7 +23,8 @@ class Sho3baPage extends StatelessWidget {
       backgroundColor: AppColors.kPrimaryColor,
       appBar: AppBar(
         iconTheme: IconThemeData(
-            color: AppStyles.styleCairoMedium15white(context).color),
+          color: AppStyles.styleCairoMedium15white(context).color,
+        ),
         backgroundColor: AppColors.kSecondaryColor,
         title: Text(
           'رواية شعبة',
@@ -38,15 +39,12 @@ class Sho3baPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ListSurahsListeningPage(
-                    reciter: reciters[index],
-                  ),
+                  builder: (context) =>
+                      ListSurahsListeningPage(reciter: reciters[index]),
                 ),
               );
             },
-            child: RecitursItem(
-              title: reciters[index].name,
-            ),
+            child: RecitursItem(title: reciters[index].name),
           );
         },
       ),

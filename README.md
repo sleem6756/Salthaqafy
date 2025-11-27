@@ -7,11 +7,12 @@ Althaqafy is a comprehensive Islamic mobile application developed by Dr. Salem A
 
 ### Main Flow
 1. **Splash Screen**: App initializes audio service, notifications, and loads azkar data from JSON
-2. **Home Page**: Displays 4 main categories in a grid layout:
-   - الأذكار (Azkar/Remembrances)
-   - الرقية الشرعية (Islamic Healing/Ruqiya)
-   - القرآن الكريم (Holy Quran) - opens bottom sheet for reading/listening options
-   - كتب (Islamic Books)
+2. **Main Navigation**: Bottom navigation bar with 5 tabs:
+    - كتب (Books) - Islamic books by Dr. Salem Al-Thaqafi
+    - قراءة (Quran Reading) - Tab-based Quran reading with bookmarks
+    - سماع (Quran Listening) - Audio Quran with multiple reciters
+    - الأذكار (Azkar) - Daily remembrances with favorites and notifications
+    - اتصل بنا (Contact) - Contact information
 
 ### Feature Workflows
 
@@ -139,9 +140,12 @@ The app uses BLoC (Business Logic Component) pattern extensively:
 - Search functionality in dedicated page
 
 #### Quran Listening
-- Grid layout of reciter options
-- Each reciter page shows surah list with play buttons
-- Audio handler manages playlist and background playback
+- **Main Listening Page**: Grid of 14 reciter categories (Murattal, Mugawwad, Warsh, Sho3ba, Dorie, Abi Alhareth, Qaloon, Khalaf, Urdu, English, Makka, Madina, Taraweeh, Favorites)
+- **Reciter Selection**: Each category displays a list of reciters (e.g., Murattal category has 100+ reciters alphabetically organized with search)
+- **Surah List**: For each reciter, a list of 114 surahs with advanced audio controls
+- **Audio Controls**: Play/pause, seek slider, speed control (fast forward/rewind), next/previous surah, favorite toggle, share, download
+- **Background Playback**: Audio service supports playlist management, background playback, and media notifications
+- **Favorites**: Users can favorite individual surahs for quick access
 
 #### Azkar System
 - Category-based organization
@@ -155,7 +159,7 @@ This architecture ensures a robust, scalable Islamic application with comprehens
 
 Before running the Althaqafy app, ensure you have the following installed:
 
-- **Flutter SDK**: Version 3.9.2 or higher. Download from [flutter.dev](https://flutter.dev/docs/get-started/install).
+- **Flutter SDK**: Compatible with Dart 3.9.2 or higher. Download from [flutter.dev](https://flutter.dev/docs/get-started/install).
 - **Dart SDK**: Included with Flutter.
 - **Android Studio** or **VS Code** with Flutter extensions for development.
 - **Android SDK** for Android builds (API level 21+).
@@ -246,5 +250,6 @@ For support or inquiries, contact: [email/contact info]
 
 ## Version History
 
+- **v2.0.0+2**: Current version with comprehensive Islamic features including Quran reading/listening, azkar, ruqiya, and books.
 - **v2.0.0**: Major update with enhanced features and UI improvements.
 - **v1.x.x**: Initial releases with core Islamic features.

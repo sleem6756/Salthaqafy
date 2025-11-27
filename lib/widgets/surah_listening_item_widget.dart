@@ -247,40 +247,6 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
           ).copyWith(color: Colors.black),
         ),
         const Spacer(),
-        buildActionButtons(),
-      ],
-    );
-  }
-
-  Widget buildActionButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        GestureDetector(
-          onTap: () => shareAudio(widget.audioUrl),
-          child: SvgPicture.asset(
-            height: 30,
-            Assets.imagesShare,
-            placeholderBuilder: (context) => const Icon(Icons.error),
-          ),
-        ),
-        const SizedBox(width: 10),
-        GestureDetector(
-          onTap: () => _handleAudioAction(() {
-            // showMessage("جاري التحميل...");
-            downloadAudio(
-              widget.audioUrl,
-              quran.getSurahNameArabic(widget.index + 1),
-              context,
-            );
-          }),
-          child: SvgPicture.asset(
-            height: 30,
-            Assets.imagesDocumentDownload,
-            placeholderBuilder: (context) => const Icon(Icons.error),
-          ),
-        ),
-        const SizedBox(width: 10),
       ],
     );
   }
@@ -403,23 +369,23 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             IconButton(
-              onPressed: isCurrentItem && playing
+              onPressed: isCurrentItem
                   ? () => playPreviousSurah(globalAudioHandler)
                   : null,
               icon: Icon(
                 Icons.skip_next,
                 size: 30,
-                color: isCurrentItem && playing ? Colors.black : Colors.grey,
+                color: isCurrentItem ? Colors.black : Colors.grey,
               ),
             ),
             IconButton(
-              onPressed: isCurrentItem && playing
+              onPressed: isCurrentItem
                   ? () => globalAudioHandler.decreaseSpeed()
                   : null,
               icon: Icon(
                 Icons.fast_forward,
                 size: 30,
-                color: isCurrentItem && playing ? Colors.black : Colors.grey,
+                color: isCurrentItem ? Colors.black : Colors.grey,
               ),
             ),
             IconButton(
@@ -465,23 +431,23 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                     ),
             ),
             IconButton(
-              onPressed: isCurrentItem && playing
+              onPressed: isCurrentItem
                   ? () => globalAudioHandler.increaseSpeed()
                   : null,
               icon: Icon(
                 Icons.fast_rewind,
                 size: 30,
-                color: isCurrentItem && playing ? Colors.black : Colors.grey,
+                color: isCurrentItem ? Colors.black : Colors.grey,
               ),
             ),
             IconButton(
-              onPressed: isCurrentItem && playing
+              onPressed: isCurrentItem
                   ? () => playNextSurah(globalAudioHandler)
                   : null,
               icon: Icon(
                 Icons.skip_previous,
                 size: 30,
-                color: isCurrentItem && playing ? Colors.black : Colors.grey,
+                color: isCurrentItem ? Colors.black : Colors.grey,
               ),
             ),
           ],

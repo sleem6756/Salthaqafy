@@ -36,7 +36,8 @@ class _BooksPageState extends State<BooksPage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
       final bookProvider = Provider.of<BookProvider>(context, listen: false);
       bookProvider.fetchBooks(isLoadMore: true);
     }
@@ -58,6 +59,7 @@ class _BooksPageState extends State<BooksPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // Remove back button
         title: const Text('الكتب'),
         centerTitle: true,
         actions: [
@@ -79,10 +81,7 @@ class _BooksPageState extends State<BooksPage> {
             icon: const Icon(Icons.search),
             onPressed: _openSearchPage,
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _refreshBooks,
-          ),
+          IconButton(icon: const Icon(Icons.refresh), onPressed: _refreshBooks),
         ],
       ),
       body: Consumer<BookProvider>(
@@ -93,18 +92,20 @@ class _BooksPageState extends State<BooksPage> {
               Container(
                 width: double.infinity,
                 height: 200,
-                decoration: BoxDecoration(
-                  image: const DecorationImage(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
                     image: AssetImage('assets/cert.jpg'),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
 
-
               // Books Count Header
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
                 child: Text(
                   'جميع الكتب (${bookProvider.books.length})',
                   style: const TextStyle(
@@ -119,36 +120,32 @@ class _BooksPageState extends State<BooksPage> {
                 child: bookProvider.isLoading && bookProvider.books.isEmpty
                     ? const ShimmerLoading()
                     : bookProvider.books.isEmpty
-                        ? const Center(
-                            child: Text('لا توجد كتب'),
-                          )
-                        : ListView.builder(
-                            controller: _scrollController,
-                            padding: const EdgeInsets.all(16),
-                            itemCount: bookProvider.books.length +
-                                (bookProvider.isLoadingMore ? 1 : 0),
-                            itemBuilder: (context, index) {
-                              if (index == bookProvider.books.length) {
-                                return const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.all(16.0),
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                );
-                              }
+                    ? const Center(child: Text('لا توجد كتب'))
+                    : ListView.builder(
+                        controller: _scrollController,
+                        padding: const EdgeInsets.all(16),
+                        itemCount:
+                            bookProvider.books.length +
+                            (bookProvider.isLoadingMore ? 1 : 0),
+                        itemBuilder: (context, index) {
+                          if (index == bookProvider.books.length) {
+                            return const Center(
+                              child: Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
 
-                              final book = bookProvider.books[index];
-                              final mediaUrl = book.coverImageUrl;
+                          final book = bookProvider.books[index];
+                          final mediaUrl = book.coverImageUrl;
 
-                              return Container(
-                                margin: const EdgeInsets.only(bottom: 16),
-                                child: BookCard(
-                                  book: book,
-                                  mediaUrl: mediaUrl,
-                                ),
-                              );
-                            },
-                          ),
+                          return Container(
+                            margin: const EdgeInsets.only(bottom: 16),
+                            child: BookCard(book: book, mediaUrl: mediaUrl),
+                          );
+                        },
+                      ),
               ),
             ],
           );
@@ -156,5 +153,4 @@ class _BooksPageState extends State<BooksPage> {
       ),
     );
   }
-
 }

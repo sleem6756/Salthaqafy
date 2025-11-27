@@ -16,7 +16,7 @@ Althaqafy is a comprehensive Islamic mobile application developed by Dr. Salem A
 ### Feature Workflows
 
 #### Quran Feature
-- **Reading**: Tab-based interface with Surah, Juz, and Bookmarks tabs
+- **Reading**: Tab-based interface with Surah and Bookmarks tabs
 - **Listening**: Grid of reciters (Murattal, Mugawwad, various narrations like Warsh, Sho3ba, etc.)
 - **Bookmarks**: Save and manage reading positions
 - **Audio Playback**: Background audio service with playlist support, speed control
@@ -134,7 +134,7 @@ The app uses BLoC (Business Logic Component) pattern extensively:
 ### Key Features Logic
 
 #### Quran Reading
-- Tab controller with SurahListWidget, JuzListPage, BookmarksPage
+- Tab controller with SurahListWidget, BookmarksPage
 - Font size adjustable via provider
 - Search functionality in dedicated page
 
@@ -151,3 +151,100 @@ The app uses BLoC (Business Logic Component) pattern extensively:
 - Azkar notifications for sleep and wake times
 
 This architecture ensures a robust, scalable Islamic application with comprehensive features for Muslim users.
+## Prerequisites
+
+Before running the Althaqafy app, ensure you have the following installed:
+
+- **Flutter SDK**: Version 3.9.2 or higher. Download from [flutter.dev](https://flutter.dev/docs/get-started/install).
+- **Dart SDK**: Included with Flutter.
+- **Android Studio** or **VS Code** with Flutter extensions for development.
+- **Android SDK** for Android builds (API level 21+).
+- **Xcode** for iOS builds (macOS only).
+
+## Installation
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/your-repo/althaqafy.git
+   cd althaqafy
+   ```
+
+2. **Install dependencies**:
+   ```bash
+   flutter pub get
+   ```
+
+3. **Configure app icons** (optional, if not already set):
+   ```bash
+   flutter pub run flutter_launcher_icons:main
+   ```
+
+## Building and Running
+
+### For Android:
+```bash
+flutter build apk --release
+# or for development
+flutter run
+```
+
+### For iOS (macOS only):
+```bash
+flutter build ios --release
+# or for development
+flutter run
+```
+
+### For Web (if supported):
+```bash
+flutter build web
+flutter run -d chrome
+```
+
+## Key Features
+
+- **Quran Reading & Listening**: Complete Quran with multiple reciters, bookmarks, and audio playback.
+- **Daily Azkar**: Comprehensive collection of Islamic remembrances with search and favorites.
+- **Ruqiya (Islamic Healing)**: Texts for spiritual healing and protection.
+- **Islamic Books**: Access to a library of Islamic literature by Dr. Salem Al-Thaqafi.
+- **Prayer Times & Notifications**: Azkar reminders and prayer time alerts.
+- **Qibla Compass**: Integrated compass for finding the direction of prayer.
+- **Offline Support**: Most content available without internet connection.
+- **Arabic RTL Support**: Full right-to-left layout for Arabic content.
+- **Themes**: Light, dark, and system themes.
+
+## Screenshots
+
+(Add screenshots here if available)
+
+## API Integration
+
+The app integrates with external APIs for:
+- Islamic books data
+- Prayer times (if applicable)
+- Other Islamic content
+
+## Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository.
+2. Create a feature branch: `git checkout -b feature-name`.
+3. Commit your changes: `git commit -m 'Add some feature'`.
+4. Push to the branch: `git push origin feature-name`.
+5. Open a pull request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Author
+
+Developed by Dr. Salem Al-Thaqafi.
+
+For support or inquiries, contact: [email/contact info]
+
+## Version History
+
+- **v2.0.0**: Major update with enhanced features and UI improvements.
+- **v1.x.x**: Initial releases with core Islamic features.

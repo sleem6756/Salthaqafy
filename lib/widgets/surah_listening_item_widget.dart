@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:audio_service/audio_service.dart';
 import 'package:althaqafy/model/quran_models/reciters_model.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -40,6 +41,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   bool isFavorite = false;
   Duration totalDuration = Duration.zero;
   Duration currentDuration = Duration.zero;
+  late ConnectivityResult _connectivityStatus;
   StreamSubscription<PlayerState>? _playerStateSubscription;
   final DatabaseHelper _databaseHelper = DatabaseHelper();
   late int currentIndex;
@@ -47,6 +49,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
   void initState() {
     super.initState();
     _initializeFavoriteState();
+    _checkInternetConnection();
     currentIndex = widget.index;
   }
 
@@ -56,7 +59,27 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     super.dispose();
   }
 
+  Future<void> _checkInternetConnection() async {
+    final List<ConnectivityResult> connectivityResults = await Connectivity()
+        .checkConnectivity();
+    if (mounted) {
+      setState(() {
+        _connectivityStatus =
+            connectivityResults.contains(ConnectivityResult.none)
+            ? ConnectivityResult.none
+            : connectivityResults.first;
+      });
+    }
+  }
 
+  void _handleAudioAction(Function() action) {
+    _checkInternetConnection();
+    if (_connectivityStatus == ConnectivityResult.none) {
+      showOfflineMessage();
+    } else {
+      action();
+    }
+  }
 
   Future<void> _initializeFavoriteState() async {
     // Check if this surah is marked as favorite
@@ -113,9 +136,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       playlistIndex: currentIndex, // Pass the playlist index here!
       setIsPlaying: (_) {},
     );
-    setState(() {
-      isExpanded = true;
-    });
+    if (mounted) {
+      setState(() {
+        isExpanded = true;
+      });
+    }
   }
 
   void playNextSurah(AudioPlayerHandler audioHandler) {
@@ -138,9 +163,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       playlistIndex: currentIndex, // Important: pass the updated index!
       setIsPlaying: (_) {},
     );
-    setState(() {
-      isExpanded = true;
-    });
+    if (mounted) {
+      setState(() {
+        isExpanded = true;
+      });
+    }
   }
 
   @override
@@ -154,9 +181,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
           if (globalAudioHandler.mediaItem.value?.extras?['URL'] ==
               widget.audioUrl) {
             Future.microtask(() {
-              setState(() {
-                isExpanded = true;
-              });
+              if (mounted) {
+                setState(() {
+                  isExpanded = true;
+                });
+              }
             });
           }
         }
@@ -164,9 +193,11 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
           children: [
             GestureDetector(
               onTap: () {
-                setState(() {
-                  isExpanded = !isExpanded;
-                });
+                if (mounted) {
+                  setState(() {
+                    isExpanded = !isExpanded;
+                  });
+                }
               },
               child: buildSurahItem(),
             ),
@@ -235,11 +266,14 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         ),
         const SizedBox(width: 10),
         GestureDetector(
-          onTap: () => downloadAudio(
-            widget.audioUrl,
-            quran.getSurahNameArabic(widget.index + 1),
-            context,
-          ),
+          onTap: () => _handleAudioAction(() {
+            // showMessage("جاري التحميل...");
+            downloadAudio(
+              widget.audioUrl,
+              quran.getSurahNameArabic(widget.index + 1),
+              context,
+            );
+          }),
           child: SvgPicture.asset(
             height: 30,
             Assets.imagesDocumentDownload,
@@ -390,7 +424,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
             ),
             IconButton(
               onPressed: () {
-                globalAudioHandler.togglePlayPause(
+                _handleAudioAction(() {
+                  globalAudioHandler.togglePlayPause(
                     isPlaying: isCurrentItem && playing,
                     audioUrl: widget.audioUrl,
                     albumName: widget.reciter.name,
@@ -408,7 +443,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                         ? () => widget.onAudioTap!(widget.index)
                         : null,
                   );
-                },
+                });
+              },
               icon: isLoading
                   ? SizedBox(
                       height: 45,

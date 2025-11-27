@@ -10,7 +10,7 @@ import '../constants.dart';
 import '../cubit/theme_cubit/theme_cubit.dart';
 import '../model/book_mark_model.dart';
 import '../pages/quran_pages/doaa_khatm_page.dart';
-import '../pages/quran_pages/juz_page.dart';
+
 import '../utils/app_images.dart';
 import '../utils/app_style.dart';
 import 'font_slider_widget.dart';
@@ -195,18 +195,6 @@ class _QuranContainerDownState extends State<QuranContainerDown> {
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => const SurahListWidget(),
-                        ),
-                      );
-                    },
-                  ),
-                  QuranContainerButtons(
-                    iconHeight: 15.3,
-                    iconPath: Assets.imagesVector,
-                    text: 'الأجزاء',
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const JuzListPage(),
                         ),
                       );
                     },

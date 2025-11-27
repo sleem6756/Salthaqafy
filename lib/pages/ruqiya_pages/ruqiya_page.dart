@@ -29,6 +29,7 @@ class _RuqiyaPageState extends State<RuqiyaPage> {
       child: Scaffold(
         backgroundColor: AppColors.kPrimaryColor,
         appBar: AppBar(
+          automaticallyImplyLeading: false, // Remove back button
           iconTheme: IconThemeData(
             color: AppStyles.styleDiodrumArabicbold20(context).color,
           ),

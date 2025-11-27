@@ -17,7 +17,7 @@ import 'cubit/theme_cubit/theme_cubit.dart';
 import 'providers/book_provider.dart';
 import 'model/azkar_model/azkar_model/azkar_model.dart';
 import 'pages/azkar_pages/notification_service.dart';
-import 'pages/home_page/home_page.dart';
+import 'pages/main_navigation.dart';
 import 'pages/quran_pages/book_mark_provider.dart';
 import 'pages/quran_pages/quran_data_provider.dart';
 import 'pages/quran_pages/quran_font_size_provider.dart';
@@ -126,7 +126,11 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           iconTheme: const IconThemeData(color: Colors.white),
         ),
-        home: const HomePages(),
+        initialRoute: '/',
+        routes: {
+          '/': (context) => const SplashScreen(),
+          '/main': (context) => const MainNavigation(),
+        },
       ),
     );
   }

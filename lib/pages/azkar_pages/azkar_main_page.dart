@@ -1,6 +1,7 @@
 import 'package:althaqafy/cubit/azkar_cubit/azkar_cubit.dart';
 import 'package:althaqafy/cubit/azkar_cubit/azkar_state.dart';
 import 'package:althaqafy/pages/azkar_pages/fav_azkar_page.dart';
+import 'package:althaqafy/pages/ruqiya_pages/ruqiya_page.dart';
 import 'package:althaqafy/widgets/reciturs_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -86,6 +87,21 @@ class _AzkarPageState extends State<AzkarPage> {
                 style: AppStyles.styleDiodrumArabicbold20(context),
               ),
         actions: [
+          // Ruqiya Navigation Button
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.of(
+                  context,
+                ).push(MaterialPageRoute(builder: (_) => const RuqiyaPage()));
+              },
+              child: Text(
+                'الرقية',
+                style: AppStyles.styleCairoMedium15white(context),
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(

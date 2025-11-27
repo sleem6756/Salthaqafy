@@ -67,75 +67,60 @@ void showTafseer({
   required int surahNumber,
   required int verseNumber,
 }) async {
-  try {
-    // Show loading spinner while fetching data
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => const Center(child: CircularProgressIndicator()),
-    );
+  // Show loading spinner while fetching data
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) => const Center(child: CircularProgressIndicator()),
+  );
 
-    // Load tafseer JSON data
-    final tafseerSurah = await loadJSONDataMap(
-      'assets/quranjson/translation/ar/ar_translation_$surahNumber.json',
-    );
+  // Simulate loading delay
+  await Future.delayed(const Duration(seconds: 1));
 
-    // Extract the tafseer for the specified verse
-    final tafseerAyah =
-        tafseerSurah['verse']?['verse_$verseNumber'] ??
-        'تفسير غير متاح لهذه الآية';
+  // Close the loading dialog
+  Navigator.of(context).pop();
 
-    // Close the loading dialog
-    Navigator.of(context).pop();
-
-    // Display tafseer in a bottom sheet
-    showModalBottomSheet(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      context: context,
-      builder: (context) {
-        return Container(
-          height: MediaQuery.of(context).size.height / 2,
-          width: double.infinity,
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: AppColors.kSecondaryColor,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-            ),
+  // Display message that tafseer is not available
+  showModalBottomSheet(
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    context: context,
+    builder: (context) {
+      return Container(
+        height: MediaQuery.of(context).size.height / 3,
+        width: double.infinity,
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.kSecondaryColor,
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
           ),
-          child: SingleChildScrollView(
-            child: Text(
-              tafseerAyah,
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(
+              Icons.info_outline,
+              size: 48,
+              color: Colors.white,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'تفسير الآية غير متاح حالياً',
               style: AppStyles.styleDiodrumArabicbold20(context).copyWith(),
-              textAlign: TextAlign.justify,
+              textAlign: TextAlign.center,
             ),
-          ),
-        );
-      },
-    );
-  } catch (error) {
-    // Close the loading dialog in case of an error
-    if (Navigator.of(context).canPop()) Navigator.of(context).pop();
-
-    // Log the error for debugging
-    log('Error loading tafseer: $error');
-
-    // Show error message
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('خطأ'),
-        content: const Text('تعذر تحميل التفسير. يرجى المحاولة لاحقًا.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('حسناً'),
-          ),
-        ],
-      ),
-    );
-  }
+            const SizedBox(height: 8),
+            Text(
+              'سيتم توفير خدمة التفسير في التحديثات القادمة',
+              style: AppStyles.styleCairoMedium15white(context),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }
 
 double currentSpeed = 1.0; // Track the current speed of playback

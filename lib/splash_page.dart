@@ -8,7 +8,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with TickerProviderStateMixin {
   late AnimationController _logoController;
   late Animation<double> _logoAnimation;
   late AnimationController _textController;
@@ -59,6 +60,13 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         Future.delayed(const Duration(milliseconds: 1000), () {
           if (mounted) {
             _progressController.forward();
+          }
+        });
+
+        // Navigate to main page after splash animations complete
+        Future.delayed(const Duration(seconds: 4), () {
+          if (mounted) {
+            Navigator.of(context).pushReplacementNamed('/main');
           }
         });
       }
@@ -132,7 +140,9 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
                         height: 60,
                         child: CircularProgressIndicator(
                           value: _progressAnimation.value,
-                          valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Theme.of(context).primaryColor,
+                          ),
                           strokeWidth: 4,
                         ),
                       );
@@ -172,12 +182,10 @@ class AppIconLoader extends StatefulWidget {
 
 class _AppIconLoaderState extends State<AppIconLoader>
     with SingleTickerProviderStateMixin {
-
   @override
   void initState() {
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -192,10 +200,6 @@ class ErrorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text('Error: $errorMessage'),
-      ),
-    );
+    return Scaffold(body: Center(child: Text('Error: $errorMessage')));
   }
 }

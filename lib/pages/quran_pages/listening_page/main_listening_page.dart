@@ -44,6 +44,7 @@ class ListeningPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // Remove back button
         iconTheme: IconThemeData(
           color: AppStyles.styleDiodrumArabicbold20(context).color,
         ),

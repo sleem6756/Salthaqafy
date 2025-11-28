@@ -8,6 +8,7 @@ import 'package:quran/quran.dart' as quran;
 import '../../../constants.dart';
 import '../../../main.dart';
 import '../../../model/audio_model.dart';
+import '../../../pages/sevices/audio_handler.dart';
 import '../../../widgets/surah_listening_item_widget.dart';
 
 class ListSurahsListeningPage extends StatefulWidget {
@@ -29,7 +30,11 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
   @override
   void initState() {
     super.initState();
-    _initPlayList();
+    // Don't initialize playlist here - do it lazily on first surah tap
+    // This prevents auto-activation of first surah and preserves background audio
+    setState(() {
+      _isLoaded = true; // Mark page as ready without audio setup
+    });
   }
 
   @override
@@ -39,8 +44,16 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
     super.dispose();
   }
 
-  Future<void> _initPlayList() async {
-    // Build the playlist synchronously
+  Future<void> _ensurePlaylistInitialized() async {
+    // Check if we're already playing from this reciter
+    final currentReciter = globalAudioHandler.mediaItem.value?.album;
+    if (currentReciter == widget.reciter.name &&
+        AudioPlayerHandler.currentPlaylist.isNotEmpty) {
+      // Already on this reciter's playlist, don't reinitialize
+      return;
+    }
+
+    // Different reciter or no playlist - build new playlist
     List<AudioModel> playlist = [];
     if (widget.reciter.zeroPaddingSurahNumber) {
       for (int i = 1; i <= 114; i++) {
@@ -65,20 +78,11 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
       }
     }
 
-    // Set up the audio source asynchronously.
-    await globalAudioHandler.setAudioSourceWithPlaylist(
+    // Initialize playlist without auto-playing
+    await globalAudioHandler.initializePlaylist(
       playlist: playlist,
-      index: 0, // Start from the first surah.
       album: widget.reciter.name,
-      title: quran.getSurahNameArabic(1), // Assuming first surah is Al-Fatiha.
-
-      artUri: null,
     );
-    if (mounted) {
-      setState(() {
-        _isLoaded = true;
-      });
-    }
   }
 
   void updateTappedSurahName(int surahIndex) {
@@ -193,6 +197,8 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
                                     index: surahIndex,
                                     audioUrl: audioUrl,
                                     onAudioTap: updateTappedSurahName,
+                                    ensurePlaylistInitialized:
+                                        _ensurePlaylistInitialized,
                                     reciter: widget.reciter,
                                   );
                                 },

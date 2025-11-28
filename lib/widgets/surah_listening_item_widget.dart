@@ -21,6 +21,7 @@ class SurahListeningItem extends StatefulWidget {
   final int index;
   final String audioUrl;
   final void Function(int surahIndex)? onAudioTap;
+  final Future<void> Function()? ensurePlaylistInitialized;
   final RecitersModel reciter;
 
   const SurahListeningItem({
@@ -28,6 +29,7 @@ class SurahListeningItem extends StatefulWidget {
     required this.index,
     required this.audioUrl,
     this.onAudioTap,
+    this.ensurePlaylistInitialized,
     required this.reciter,
   });
 
@@ -115,48 +117,35 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     }
   }
 
+  void _handlePlayPause() async {
+    if (widget.ensurePlaylistInitialized != null) {
+      await widget.ensurePlaylistInitialized!();
+    }
+
+    _handleAudioAction(() async {
+      final currentURL = globalAudioHandler.mediaItem.value?.extras?['URL'];
+      final isPlaying =
+          globalAudioHandler.playbackState.value?.playing ?? false;
+
+      if (currentURL == widget.audioUrl && isPlaying) {
+        await globalAudioHandler.pause();
+      } else if (currentURL == widget.audioUrl && !isPlaying) {
+        await globalAudioHandler.play();
+      } else {
+        await globalAudioHandler.playFromIndex(widget.index);
+        if (widget.onAudioTap != null) {
+          widget.onAudioTap!(widget.index);
+        }
+      }
+    });
+  }
+
   void playPreviousSurah(AudioPlayerHandler audioHandler) {
-    currentIndex -= 1;
-    // showMessage("جاري تشغيل السورة السابقة");
-
-    // if (currentIndex < 0) {
-    //   showMessage("لا يوجد سورة سابقة");
-    //   return;
-    // }
-
-    audioHandler.togglePlayPause(
-      isPlaying: false,
-      audioUrl: widget.reciter.zeroPaddingSurahNumber
-          ? '${widget.reciter.url}${(currentIndex + 1).toString().padLeft(3, '0')}.mp3'
-          : '${widget.reciter.url}${currentIndex + 1}.mp3',
-      albumName: widget.reciter.name,
-      title: quran.getSurahNameArabic(currentIndex + 1),
-      index: currentIndex,
-      playlistIndex: currentIndex, // Pass the playlist index here!
-      setIsPlaying: (_) {},
-    );
+    audioHandler.skipToPrevious();
   }
 
   void playNextSurah(AudioPlayerHandler audioHandler) {
-    currentIndex += 1;
-    // showMessage("جاري تشغيل السورة التالية");
-
-    // if (currentIndex >= 114) {
-    //   showMessage("لا يوجد سورة تالية");
-    //   return;
-    // }
-
-    audioHandler.togglePlayPause(
-      isPlaying: false,
-      audioUrl: widget.reciter.zeroPaddingSurahNumber
-          ? '${widget.reciter.url}${(currentIndex + 1).toString().padLeft(3, '0')}.mp3'
-          : '${widget.reciter.url}${currentIndex + 1}.mp3',
-      albumName: widget.reciter.name,
-      title: quran.getSurahNameArabic(currentIndex + 1),
-      index: currentIndex,
-      playlistIndex: currentIndex, // Important: pass the updated index!
-      setIsPlaying: (_) {},
-    );
+    audioHandler.skipToNext();
   }
 
   @override
@@ -172,30 +161,33 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
         return Column(
           children: [
             GestureDetector(
-              onTap: () {
+              onTap: () async {
+                // Ensure playlist is initialized before playback
+                if (widget.ensurePlaylistInitialized != null) {
+                  await widget.ensurePlaylistInitialized!();
+                }
+
                 // Start playback when tapped
-                _handleAudioAction(() {
-                  globalAudioHandler.togglePlayPause(
-                    isPlaying:
-                        isCurrentItem &&
-                        (globalAudioHandler.playbackState.value?.playing ??
-                            false),
-                    audioUrl: widget.audioUrl,
-                    albumName: widget.reciter.name,
-                    title: quran.getSurahNameArabic(widget.index + 1),
-                    index: widget.index,
-                    playlistIndex: widget.index,
-                    setIsPlaying: (playing) {
-                      if (mounted) {
-                        setState(() {
-                          isPlaying = playing;
-                        });
-                      }
-                    },
-                    onAudioTap: widget.onAudioTap != null
-                        ? () => widget.onAudioTap!(widget.index)
-                        : null,
-                  );
+                _handleAudioAction(() async {
+                  // Check if this item is currently playing
+                  final currentURL =
+                      globalAudioHandler.mediaItem.value?.extras?['URL'];
+                  final isPlaying =
+                      globalAudioHandler.playbackState.value?.playing ?? false;
+
+                  if (currentURL == widget.audioUrl && isPlaying) {
+                    // Same track playing - pause it
+                    await globalAudioHandler.pause();
+                  } else if (currentURL == widget.audioUrl && !isPlaying) {
+                    // Same track paused - resume it
+                    await globalAudioHandler.play();
+                  } else {
+                    // Different track or first time - play from index
+                    await globalAudioHandler.playFromIndex(widget.index);
+                    if (widget.onAudioTap != null) {
+                      widget.onAudioTap!(widget.index);
+                    }
+                  }
                 });
               },
               child: buildSurahItem(isCurrentItem),
@@ -389,26 +381,8 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
             ),
             IconButton(
               onPressed: () {
-                _handleAudioAction(() {
-                  globalAudioHandler.togglePlayPause(
-                    isPlaying: isCurrentItem && playing,
-                    audioUrl: widget.audioUrl,
-                    albumName: widget.reciter.name,
-                    title: quran.getSurahNameArabic(widget.index + 1),
-                    index: widget.index,
-                    playlistIndex: widget.index,
-                    setIsPlaying: (playing) {
-                      if (mounted) {
-                        setState(() {
-                          isPlaying = playing;
-                        });
-                      }
-                    },
-                    onAudioTap: widget.onAudioTap != null
-                        ? () => widget.onAudioTap!(widget.index)
-                        : null,
-                  );
-                });
+                // Toggle play/pause via audio handler
+                _handlePlayPause();
               },
               icon: isLoading
                   ? SizedBox(

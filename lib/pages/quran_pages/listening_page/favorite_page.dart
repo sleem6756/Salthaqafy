@@ -44,12 +44,9 @@ class _FavoritePageState extends State<FavoritePage> {
 
     if (playlist.isNotEmpty) {
       // Set up the audio source asynchronously without auto-playing
-      await globalAudioHandler.setAudioSourceWithPlaylist(
+      await globalAudioHandler.initializePlaylist(
         playlist: playlist,
-        index: 0, // Default to first item but won't play automatically
-        album: _favorites[0].reciter.name,
-        title: quran.getSurahNameArabic(_favorites[0].surahIndex + 1),
-        artUri: null,
+        album: 'المفضلة',
       );
     }
   }
@@ -59,27 +56,28 @@ class _FavoritePageState extends State<FavoritePage> {
     // _searchController.dispose();
     super.dispose();
   }
-void _loadFavorites() async {
-  try {
-    List<FavModel> favorites = await _databaseHelper.getFavorites();
-    if (mounted) {
-      setState(() {
-        _favorites = favorites;
-        // filteredFavs = favorites;
-      });
-      _initPlayList(); // Re-init playlist when favorites change
+
+  void _loadFavorites() async {
+    try {
+      List<FavModel> favorites = await _databaseHelper.getFavorites();
+      if (mounted) {
+        setState(() {
+          _favorites = favorites;
+          // filteredFavs = favorites;
+        });
+        _initPlayList(); // Re-init playlist when favorites change
+      }
+    } catch (e) {
+      debugPrint('Error loading favorites: $e');
     }
-  } catch (e) {
-    debugPrint('Error loading favorites: $e');
   }
-}
-// void _removeFavorite(FavModel favModel) async {
-//   await _databaseHelper.deleteFavorite(
-//     favModel.surahIndex, 
-//     favModel.reciter.name
-//   );
-//   _loadFavorites(); // Refresh list
-// }
+  // void _removeFavorite(FavModel favModel) async {
+  //   await _databaseHelper.deleteFavorite(
+  //     favModel.surahIndex,
+  //     favModel.reciter.name
+  //   );
+  //   _loadFavorites(); // Refresh list
+  // }
 
   // void _filterFavs(String query) {
   //   setState(() {
@@ -118,38 +116,37 @@ void _loadFavorites() async {
     return Scaffold(
       backgroundColor: AppColors.kPrimaryColor,
       appBar: AppBar(
-          iconTheme: IconThemeData(
-              color: AppStyles.styleCairoMedium15white(context).color),
-          backgroundColor: AppColors.kSecondaryColor,
-          title:
-          //  _isSearching
-          //     ? TextField(
-          //         style: AppStyles.styleCairoMedium15white(
-          //           context,
-          //         ),
-          //         controller: _searchController,
-          //         onChanged: _filterFavs,
-          //         decoration: InputDecoration(
-          //             hintText: 'سورة ...',
-          //             hintStyle: AppStyles.styleCairoMedium15white(context),
-          //             border: InputBorder.none,
-          //             fillColor: Colors.white),
-          //         autofocus: true,
-          //       )
-          //     : 
-              Text(
-                  'المفضلة',
-                  style: AppStyles.styleDiodrumArabicbold20(context),
-                ),
-          actions: const [
-            // Padding(
-            //   padding: const EdgeInsets.all(8.0),
-            //   child: GestureDetector(
-            //     onTap: _toggleSearch,
-            //     child: Icon(_isSearching ? Icons.close : Icons.search),
-            //   ),
-            // )
-          ]),
+        iconTheme: IconThemeData(
+          color: AppStyles.styleCairoMedium15white(context).color,
+        ),
+        backgroundColor: AppColors.kSecondaryColor,
+        title:
+            //  _isSearching
+            //     ? TextField(
+            //         style: AppStyles.styleCairoMedium15white(
+            //           context,
+            //         ),
+            //         controller: _searchController,
+            //         onChanged: _filterFavs,
+            //         decoration: InputDecoration(
+            //             hintText: 'سورة ...',
+            //             hintStyle: AppStyles.styleCairoMedium15white(context),
+            //             border: InputBorder.none,
+            //             fillColor: Colors.white),
+            //         autofocus: true,
+            //       )
+            //     :
+            Text('المفضلة', style: AppStyles.styleDiodrumArabicbold20(context)),
+        actions: const [
+          // Padding(
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: GestureDetector(
+          //     onTap: _toggleSearch,
+          //     child: Icon(_isSearching ? Icons.close : Icons.search),
+          //   ),
+          // )
+        ],
+      ),
       body: _favorites.isNotEmpty
           ? ListView.builder(
               itemCount: _favorites.length,
@@ -157,7 +154,9 @@ void _loadFavorites() async {
                 final favModel = _favorites[index];
                 return Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 16.0),
+                    vertical: 8.0,
+                    horizontal: 16.0,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -174,10 +173,9 @@ void _loadFavorites() async {
                         },
                         child: Text(
                           '> ${favModel.reciter.name} ',
-                          style: AppStyles.styleDiodrumArabicbold20(context)
-                              .copyWith(
-                            decoration: TextDecoration.underline,
-                          ),
+                          style: AppStyles.styleDiodrumArabicbold20(
+                            context,
+                          ).copyWith(decoration: TextDecoration.underline),
                         ),
                       ),
                       SurahListeningItem(

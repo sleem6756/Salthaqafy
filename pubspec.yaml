@@ -47,7 +47,6 @@ dependencies:
   flutter_localization: ^0.3.2
   flutter_localizations:
     sdk: flutter
-  flutter_qiblah: ^3.1.0+1
   flutter_svg: ^2.0.10+1
   flutter_html: ^3.0.0
   flutter_tts: ^4.0.2

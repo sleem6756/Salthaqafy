@@ -13,7 +13,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/Provider.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'cubit/azkar_cubit/azkar_cubit.dart';
-import 'cubit/theme_cubit/theme_cubit.dart';
+
 import 'providers/book_provider.dart';
 import 'model/azkar_model/azkar_model/azkar_model.dart';
 import 'pages/azkar_pages/notification_service.dart';
@@ -59,7 +59,6 @@ Future<void> main() async {
   // Initialize notification service
   await NotificationService.init();
 
-  await ThemeCubit().loadInitialTheme();
   Bloc.observer = SimpleBlocObserver();
   // Initialize the global audio handler.
   globalAudioHandler = await AudioService.init(
@@ -83,7 +82,7 @@ Future<void> main() async {
             home: const AppIconLoader(), // Use your animated app icon here
           );
         } else if (snapshot.hasError) {
-          return MaterialApp(home: ErrorScreen(snapshot.error.toString()));
+          return MaterialApp(home: ErrorScreen(snapshot.error.toString()),debugShowCheckedModeBanner: false,);
         }
         return MyApp(preloadedAzkar: snapshot.data as List<AzkarModel>);
       },
@@ -102,7 +101,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => QuranDataProvider()),
         ChangeNotifierProvider(create: (_) => QuranFontSizeProvider()),
         ChangeNotifierProvider(create: (_) => BookProvider()),
-        BlocProvider(create: (_) => ThemeCubit()..loadInitialTheme()),
+
         BlocProvider(create: (context) => FavZekrCubit()..fetchFavorites()),
         BlocProvider(create: (context) => FavSurahItemCubit()),
         BlocProvider(create: (context) => AzkarCubit(preloadedAzkar)),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants.dart';
 
 class AboutScreen extends StatelessWidget {
   const AboutScreen({super.key});
@@ -6,6 +7,7 @@ class AboutScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.kPrimaryColor,
       appBar: AppBar(title: const Text('السيرة الذاتية'), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -181,5 +183,4 @@ class AboutScreen extends StatelessWidget {
       textDirection: TextDirection.rtl,
     );
   }
-
 }

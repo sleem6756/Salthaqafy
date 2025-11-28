@@ -1,42 +1,10 @@
-import 'package:althaqafy/utils/app_style.dart';
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static Color get kPrimaryColor {
-    final themeMode = AppStyles
-        .themeNotifier
-        .value; // Assuming themeNotifier is correctly initialized and accessible
-    if (themeMode == defaultTheme) {
-      return const Color.fromARGB(134, 147, 148, 146);
-    } else if (themeMode == lightTheme) {
-      return Colors.white; // Use predefined white color
-    } else {
-      return const Color(0xff0f0f0f); // Correct way to define a custom color
-    }
-  }
-
-  static Color get kSecondaryColor {
-    final themeMode = AppStyles
-        .themeNotifier
-        .value; // Assuming themeNotifier is correctly initialized and accessible
-    if (themeMode == defaultTheme) {
-      return const Color.fromARGB(134, 147, 148, 146);
-    } else if (themeMode == lightTheme) {
-      return const Color.fromARGB(
-        255,
-        227,
-        227,
-        227,
-      ); // Use predefined white color
-    } else {
-      return const Color(0xff0f0f0f); // Correct way to define a custom color
-    }
-  }
+  static const Color kPrimaryColor = Colors.white;
+  static const Color kSecondaryColor = Color.fromARGB(255, 227, 227, 227);
 }
 
-const String darkTheme = "Dark";
-const String lightTheme = "light";
-const String defaultTheme = "default";
 // Arabic ordinals for the Juz
 const List<String> arabicOrdinals = [
   'الاول',

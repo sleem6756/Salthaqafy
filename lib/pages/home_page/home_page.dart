@@ -1,9 +1,9 @@
 import 'package:althaqafy/methods.dart';
 import 'package:althaqafy/utils/app_style.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+
 import '../../constants.dart';
-import '../../cubit/theme_cubit/theme_cubit.dart';
+
 import '../../widgets/bottom_sheet.dart';
 import '../../widgets/dedicated_button.dart';
 import '../../widgets/main_category_widget.dart';
@@ -36,10 +36,8 @@ class _HomePagesState extends State<HomePages> {
           "القائمة الرئيسية",
           style: AppStyles.styleDiodrumArabicbold20(context),
         ),
+
         // Leading button to open the left Drawer
-        leading: buildThemeButton(
-          context,
-        ), // Two action buttons: notifications toggle & info dialog
         actions: [
           IconButton(
             icon: Icon(
@@ -122,9 +120,9 @@ class _HomePagesState extends State<HomePages> {
                     child: AspectRatio(
                       aspectRatio: 1,
                       child: InkWell(
-                        onTap: () => Navigator.of(
-                          context,
-                        ).push(MaterialPageRoute(builder: (_) => const BooksPage())),
+                        onTap: () => Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => const BooksPage()),
+                        ),
                         child: MainCategoryWidget(
                           categoryImg: "assets/logo.png",
                           categoryTitle: "كتب",
@@ -138,66 +136,6 @@ class _HomePagesState extends State<HomePages> {
           ),
         ),
       ),
-    );
-  }
-
-  IconButton buildThemeButton(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        // Get the overlay to position the menu relative to the screen
-        final RenderBox overlay =
-            Overlay.of(context).context.findRenderObject() as RenderBox;
-        // Access the ThemeCubit for theme changes
-        final themeCubit = context.read<ThemeCubit>();
-
-        // Show the popup menu for theme selection
-        showMenu(
-          color: AppColors.kSecondaryColor,
-          context: context,
-          position: RelativeRect.fromRect(
-            Rect.fromLTWH(
-              overlay.size.width - 50, // Horizontal position of the menu
-              50, // Vertical position of the menu
-              50,
-              50,
-            ),
-            Offset.zero & overlay.size,
-          ),
-          items: [
-            PopupMenuItem(
-              onTap: () {
-                themeCubit.setTheme(lightTheme);
-                setState(() {});
-              },
-              child: Text(
-                'الوضع الفاتح',
-                style: AppStyles.styleCairoMedium15white(context),
-              ),
-            ),
-            PopupMenuItem(
-              onTap: () {
-                themeCubit.setTheme(darkTheme);
-                setState(() {});
-              },
-              child: Text(
-                'الوضع المظلم',
-                style: AppStyles.styleCairoMedium15white(context),
-              ),
-            ),
-            PopupMenuItem(
-              onTap: () {
-                themeCubit.setTheme(defaultTheme);
-                setState(() {});
-              },
-              child: Text(
-                'الوضع الافتراضي',
-                style: AppStyles.styleCairoMedium15white(context),
-              ),
-            ),
-          ],
-        );
-      },
-      icon: const Icon(Icons.light_mode),
     );
   }
 }

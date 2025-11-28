@@ -20,52 +20,53 @@ class ZekrPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FavZekrCubit, FavZekrState>(// Use BlocBuilder
-        builder: (context, state) {
-      final isFavorite = state is FavZekrLoaded
-          ? state.favorites
-              .any((element) => element['category'] == zekerCategory)
-          : false;
+    return BlocBuilder<FavZekrCubit, FavZekrState>(
+      // Use BlocBuilder
+      builder: (context, state) {
+        final isFavorite = state is FavZekrLoaded
+            ? state.favorites.any(
+                (element) => element['category'] == zekerCategory,
+              )
+            : false;
 
-      return Scaffold(
-        backgroundColor: AppColors.kPrimaryColor,
-        appBar: AppBar(
-          iconTheme: IconThemeData(
-              color: AppStyles.styleDiodrumArabicbold20(context).color),
-          backgroundColor: AppColors.kSecondaryColor,
-          centerTitle: true,
-          title: Text(
-            zekerCategory,
-            style: AppStyles.styleDiodrumArabicbold20(context),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () async {
-                await context
-                    .read<FavZekrCubit>()
-                    .toggleFavorite(zekerCategory, zekerList);
-                // Trigger a fetch to update favorites list after toggling
-                context.read<FavZekrCubit>().fetchFavorites();
-              },
-              icon: isFavorite
-                  ? const Icon(
-                      Icons.favorite,
-                      color: Colors.red,
-                    )
-                  : SvgPicture.asset(
-                      height: 30,
-                      Assets.imagesHeart,
-                      placeholderBuilder: (context) => const Icon(Icons.error),
-                      colorFilter: ColorFilter.mode(
-                          AppStyles.themeNotifier.value == lightTheme
-                              ? Colors.black
-                              : Colors.white,
-                          BlendMode.srcIn),
-                    ),
+        return Scaffold(
+          backgroundColor: AppColors.kPrimaryColor,
+          appBar: AppBar(
+            iconTheme: IconThemeData(
+              color: AppStyles.styleDiodrumArabicbold20(context).color,
             ),
-          ],
-        ),
-        body: Padding(
+            backgroundColor: AppColors.kSecondaryColor,
+            centerTitle: true,
+            title: Text(
+              zekerCategory,
+              style: AppStyles.styleDiodrumArabicbold20(context),
+            ),
+            actions: [
+              IconButton(
+                onPressed: () async {
+                  await context.read<FavZekrCubit>().toggleFavorite(
+                    zekerCategory,
+                    zekerList,
+                  );
+                  // Trigger a fetch to update favorites list after toggling
+                  context.read<FavZekrCubit>().fetchFavorites();
+                },
+                icon: isFavorite
+                    ? const Icon(Icons.favorite, color: Colors.red)
+                    : SvgPicture.asset(
+                        height: 30,
+                        Assets.imagesHeart,
+                        placeholderBuilder: (context) =>
+                            const Icon(Icons.error),
+                        colorFilter: ColorFilter.mode(
+                          Colors.black,
+                          BlendMode.srcIn,
+                        ),
+                      ),
+              ),
+            ],
+          ),
+          body: Padding(
             padding: const EdgeInsets.all(15),
             child: ListView.builder(
               itemCount: zekerList.length,
@@ -80,12 +81,17 @@ class ZekrPage extends StatelessWidget {
                     ? item['count'] as int?
                     : item.count;
 
-                return ZekrItem(index: index,
-                    zekerCategory: zekerCategory, text: text, count: count);
+                return ZekrItem(
+                  index: index,
+                  zekerCategory: zekerCategory,
+                  text: text,
+                  count: count,
+                );
               },
-            )),
-      );
-    });
+            ),
+          ),
+        );
+      },
+    );
   }
 }
-

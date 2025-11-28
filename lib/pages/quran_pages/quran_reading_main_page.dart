@@ -53,11 +53,7 @@ class _QuranReadingMainPageState extends State<QuranReadingMainPage> {
           children: [
             TabBar(
               indicatorColor: AppColors.kSecondaryColor,
-              labelColor: AppStyles.themeNotifier.value == defaultTheme
-                  ? AppColors.kSecondaryColor
-                  : (AppStyles.themeNotifier.value == lightTheme
-                        ? Colors.black
-                        : Colors.white),
+              labelColor: AppColors.kSecondaryColor,
               unselectedLabelColor: AppStyles.styleRajdhaniBold20(
                 context,
               ).color!.withAlpha((0.6 * 255).round()),

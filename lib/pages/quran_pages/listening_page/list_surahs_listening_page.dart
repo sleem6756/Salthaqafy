@@ -32,6 +32,13 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
     _initPlayList();
   }
 
+  @override
+  void dispose() {
+    // DO NOT stop audio - let it continue in background
+    // The global audio handler manages its own lifecycle
+    super.dispose();
+  }
+
   Future<void> _initPlayList() async {
     // Build the playlist synchronously
     List<AudioModel> playlist = [];
@@ -85,9 +92,13 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
 
   void _filterSurahs(String query) {
     setState(() {
-      filteredSurahs = List.generate(114, (index) => index + 1)
-          .where((index) => quran.getSurahNameArabic(index).contains(query))
-          .toList();
+      if (query.isEmpty) {
+        filteredSurahs = List.generate(114, (index) => index + 1);
+      } else {
+        filteredSurahs = List.generate(114, (index) => index + 1)
+            .where((index) => quran.getSurahNameArabic(index).contains(query))
+            .toList();
+      }
     });
   }
 
@@ -114,7 +125,8 @@ class _ListSurahsListeningPageState extends State<ListSurahsListeningPage> {
             ? TextField(
                 style: AppStyles.styleCairoMedium15white(context),
                 controller: _searchController,
-                onChanged: _filterSurahs,
+                onSubmitted: _filterSurahs,
+                textInputAction: TextInputAction.search,
                 decoration: const InputDecoration(
                   hintText: 'إبحث عن سورة ...',
                   border: InputBorder.none,

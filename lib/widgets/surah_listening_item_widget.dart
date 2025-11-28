@@ -36,7 +36,6 @@ class SurahListeningItem extends StatefulWidget {
 }
 
 class _SurahListeningItemState extends State<SurahListeningItem> {
-  bool isExpanded = false;
   bool isPlaying = false;
   bool isFavorite = false;
   Duration totalDuration = Duration.zero;
@@ -136,11 +135,6 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       playlistIndex: currentIndex, // Pass the playlist index here!
       setIsPlaying: (_) {},
     );
-    if (mounted) {
-      setState(() {
-        isExpanded = true;
-      });
-    }
   }
 
   void playNextSurah(AudioPlayerHandler audioHandler) {
@@ -163,11 +157,6 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       playlistIndex: currentIndex, // Important: pass the updated index!
       setIsPlaying: (_) {},
     );
-    if (mounted) {
-      setState(() {
-        isExpanded = true;
-      });
-    }
   }
 
   @override
@@ -176,30 +165,40 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       stream: globalAudioHandler.mediaItem,
       builder: (context, snapshot) {
         final currentMedia = snapshot.data;
+        // Determine if this item is currently playing
+        final bool isCurrentItem =
+            currentMedia?.extras?['URL'] == widget.audioUrl;
 
-        if (currentMedia != null && currentMedia.extras != null) {
-          if (globalAudioHandler.mediaItem.value?.extras?['URL'] ==
-              widget.audioUrl) {
-            Future.microtask(() {
-              if (mounted) {
-                setState(() {
-                  isExpanded = true;
-                });
-              }
-            });
-          }
-        }
         return Column(
           children: [
             GestureDetector(
               onTap: () {
-                if (mounted) {
-                  setState(() {
-                    isExpanded = !isExpanded;
-                  });
-                }
+                // Start playback when tapped
+                _handleAudioAction(() {
+                  globalAudioHandler.togglePlayPause(
+                    isPlaying:
+                        isCurrentItem &&
+                        (globalAudioHandler.playbackState.value?.playing ??
+                            false),
+                    audioUrl: widget.audioUrl,
+                    albumName: widget.reciter.name,
+                    title: quran.getSurahNameArabic(widget.index + 1),
+                    index: widget.index,
+                    playlistIndex: widget.index,
+                    setIsPlaying: (playing) {
+                      if (mounted) {
+                        setState(() {
+                          isPlaying = playing;
+                        });
+                      }
+                    },
+                    onAudioTap: widget.onAudioTap != null
+                        ? () => widget.onAudioTap!(widget.index)
+                        : null,
+                  );
+                });
               },
-              child: buildSurahItem(),
+              child: buildSurahItem(isCurrentItem),
             ),
           ],
         );
@@ -207,9 +206,9 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     );
   }
 
-  Widget buildSurahItem() {
+  Widget buildSurahItem(bool isCurrentItem) {
     return Container(
-      height: isExpanded ? null : 53,
+      height: isCurrentItem ? null : 53,
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       decoration: BoxDecoration(
@@ -219,7 +218,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: [buildSurahRow(), if (isExpanded) buildExpandedContent()],
+        children: [buildSurahRow(), if (isCurrentItem) buildExpandedContent()],
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../constants.dart';
 
 class ContactScreen extends StatefulWidget {
   const ContactScreen({super.key});
@@ -87,6 +88,7 @@ class _ContactScreenState extends State<ContactScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.kPrimaryColor,
       appBar: AppBar(title: const Text('تواصل معنا'), centerTitle: true),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

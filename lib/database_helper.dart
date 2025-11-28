@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:althaqafy/constants.dart';
+
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../model/quran_models/fav_model.dart';
@@ -77,8 +77,8 @@ class DatabaseHelper {
          )
        ''');
         await db.execute(
-           'CREATE TABLE theme (id INTEGER PRIMARY KEY, themeMode TEXT)',
-         );
+          'CREATE TABLE theme (id INTEGER PRIMARY KEY, themeMode TEXT)',
+        );
         await db.execute('''
          CREATE TABLE favAzkarPage (
            $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -87,8 +87,8 @@ class DatabaseHelper {
          )
        ''');
         return db.execute(
-           'CREATE TABLE settings (id INTEGER PRIMARY KEY, notificationsEnabled INTEGER)',
-         );
+          'CREATE TABLE settings (id INTEGER PRIMARY KEY, notificationsEnabled INTEGER)',
+        );
       },
     );
   }
@@ -161,7 +161,6 @@ class DatabaseHelper {
     await db.delete('bookmarks', where: 'id = ?', whereArgs: [id]);
   }
 
-
   // Save font size to database
   Future<void> changeFontSize(double fontSize) async {
     final db = await database;
@@ -194,23 +193,6 @@ class DatabaseHelper {
       // Return default font size if no value exists
       return 35.0;
     }
-  }
-
-  Future<void> saveTheme(String themeMode) async {
-    final db = await database;
-    await db.insert('theme', {
-      'id': 1,
-      'themeMode': themeMode,
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
-  }
-
-  Future<String?> fetchTheme() async {
-    final db = await database;
-    final result = await db.query('theme', where: 'id = ?', whereArgs: [1]);
-    if (result.isNotEmpty) {
-      return result.first['themeMode'] as String;
-    }
-    return defaultTheme;
   }
 
   Future<void> insertFavAzkar(String category, List zekerList) async {
@@ -254,7 +236,6 @@ class DatabaseHelper {
       };
     }).toList();
   }
-
 
   Future<void> setNotificationsEnabled(bool enabled) async {
     final db = await database;

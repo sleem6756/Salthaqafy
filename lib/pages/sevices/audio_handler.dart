@@ -50,6 +50,19 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         _updatePlaybackState(); // Immediate update
       }
     });
+
+    // Listen for completion to auto-play next surah
+    _player.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed) {
+        // Auto-play next if available
+        if (currentIndex < currentPlaylist.length - 1) {
+          skipToNext();
+        } else {
+          // Playlist finished, stop playback
+          stop();
+        }
+      }
+    });
   }
   void _updateMediaItem() {
     if (currentIndex >= 0 && currentIndex < currentPlaylist.length) {
@@ -153,7 +166,12 @@ class AudioPlayerHandler extends BaseAudioHandler with SeekHandler {
         title: title,
         artUri: null,
         // Uri.parse('asset:///assets/images/ic_notification.png.png'),
-        extras: {'index': currentIndex},
+        extras: {
+          'index': currentIndex,
+          'URL': audioUrl,
+          'reciterName': albumName,
+          'surahIndex': index,
+        },
       );
 
       mediaItem.add(newMediaItem);

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:quran/quran.dart' as quran;
 
 import '../methods.dart';
@@ -33,8 +34,9 @@ class _VerseButtonsState extends State<VerseButtons> {
     _checkInternetConnection();
 
     // Listen to player state changes
-    _playerStateSubscription =
-        _audioPlayer.onPlayerStateChanged.listen((state) {
+    _playerStateSubscription = _audioPlayer.onPlayerStateChanged.listen((
+      state,
+    ) {
       if (mounted) {
         setState(() {
           isSoundPlaying = state == PlayerState.playing;
@@ -60,15 +62,15 @@ class _VerseButtonsState extends State<VerseButtons> {
   }
 
   Future<void> _checkInternetConnection() async {
-    final List<ConnectivityResult> connectivityResults =
-        await Connectivity().checkConnectivity();
+    final List<ConnectivityResult> connectivityResults = await Connectivity()
+        .checkConnectivity();
 
     if (mounted) {
       setState(() {
         _connectivityStatus =
             connectivityResults.contains(ConnectivityResult.none)
-                ? ConnectivityResult.none
-                : connectivityResults.first;
+            ? ConnectivityResult.none
+            : connectivityResults.first;
       });
     }
   }
@@ -98,14 +100,17 @@ class _VerseButtonsState extends State<VerseButtons> {
                 if (_connectivityStatus == ConnectivityResult.none) {
                   showMessage('لا يتوفر اتصال بالانترنت');
                 } else {
-                  togglePlayPause(quran.getAudioURLByVerse(
-                    widget.currentSurahIndex,
-                    widget.highlightedVerse,
-                  ));
+                  togglePlayPause(
+                    quran.getAudioURLByVerse(
+                      widget.currentSurahIndex,
+                      widget.highlightedVerse,
+                    ),
+                  );
                 }
               },
-              icon:
-                  Icon(isSoundPlaying ? Icons.pause_rounded : Icons.play_arrow),
+              icon: Icon(
+                isSoundPlaying ? Icons.pause_rounded : Icons.play_arrow,
+              ),
               color: Colors.green,
               iconSize: 28,
               tooltip: 'تشغيل الاية',
@@ -125,36 +130,18 @@ class _VerseButtonsState extends State<VerseButtons> {
             ),
             IconButton(
               onPressed: () {
-                shareAudio(quran.getAudioURLByVerse(
+                // Copy verse text to clipboard
+                final verseText = quran.getVerse(
                   widget.currentSurahIndex,
                   widget.highlightedVerse,
-                ));
+                );
+                Clipboard.setData(ClipboardData(text: verseText));
+                showMessage('تم نسخ الآية');
               },
-              icon: const Icon(Icons.share),
+              icon: const Icon(Icons.copy_rounded),
               color: Colors.green,
               iconSize: 28,
-              tooltip: 'مشاركة',
-            ),
-            IconButton(
-              onPressed: () {
-                _checkInternetConnection();
-                if (_connectivityStatus == ConnectivityResult.none) {
-                  showMessage('لا يتوفر اتصال بالانترنت.');
-                } else {
-                  downloadAudio(
-                    quran.getAudioURLByVerse(
-                      widget.currentSurahIndex,
-                      widget.highlightedVerse,
-                    ),
-                    quran.getSurahNameArabic(widget.currentSurahIndex),
-                    context,
-                  );
-                }
-              },
-              icon: const Icon(Icons.download_rounded),
-              color: Colors.green,
-              iconSize: 28,
-              tooltip: 'تحميل',
+              tooltip: 'نسخ الآية',
             ),
           ],
         ),

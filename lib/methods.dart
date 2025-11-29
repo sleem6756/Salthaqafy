@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'database_helper.dart';
 import 'package:althaqafy/utils/app_style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:just_audio/just_audio.dart';
@@ -61,66 +62,103 @@ void initializeAudioPlayer(
   // });
 }
 
-
 void showTafseer({
-  required BuildContext context, // Explicitly pass context
+  required BuildContext context,
   required int surahNumber,
   required int verseNumber,
 }) async {
-  // Show loading spinner while fetching data
+  // Show loading spinner
   showDialog(
     context: context,
     barrierDismissible: false,
     builder: (context) => const Center(child: CircularProgressIndicator()),
   );
 
-  // Simulate loading delay
-  await Future.delayed(const Duration(seconds: 1));
+  try {
+    final dbHelper = DatabaseHelper();
+    String? tafseerText = await dbHelper.getTafseer(surahNumber, verseNumber);
 
-  // Close the loading dialog
-  Navigator.of(context).pop();
-
-  // Display message that tafseer is not available
-  showModalBottomSheet(
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-    context: context,
-    builder: (context) {
-      return Container(
-        height: MediaQuery.of(context).size.height / 3,
-        width: double.infinity,
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: AppColors.kSecondaryColor,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(20),
-            topRight: Radius.circular(20),
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(
-              Icons.info_outline,
-              size: 48,
-              color: Colors.white,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'تفسير الآية غير متاح حالياً',
-              style: AppStyles.styleDiodrumArabicbold20(context).copyWith(),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'سيتم توفير خدمة التفسير في التحديثات القادمة',
-              style: AppStyles.styleCairoMedium15white(context),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+    if (tafseerText == null) {
+      // Fetch from API (Tafseer Al-Muyassar - ID 1)
+      final dio = Dio();
+      final response = await dio.get(
+        'http://api.quran-tafseer.com/tafseer/1/$surahNumber/$verseNumber',
       );
-    },
-  );
+
+      if (response.statusCode == 200) {
+        tafseerText = response.data['text'];
+        // Save to DB
+        if (tafseerText != null) {
+          await dbHelper.insertTafseer(surahNumber, verseNumber, tafseerText);
+        }
+      }
+    }
+
+    if (context.mounted) {
+      Navigator.of(context).pop(); // Close loading dialog
+
+      if (tafseerText != null) {
+        showModalBottomSheet(
+          shape: RoundedRectangleBorder(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          context: context,
+          isScrollControlled: true, // Allow full height if needed
+          builder: (context) {
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.6,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: AppColors.kSecondaryColor,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(20),
+                ),
+              ),
+              child: Column(
+                children: [
+                  Container(
+                    width: 50,
+                    height: 5,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    'تفسير الآية $verseNumber',
+                    style: AppStyles.styleDiodrumArabicbold20(
+                      context,
+                    ).copyWith(color: Colors.white),
+                  ),
+                  const SizedBox(height: 20),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Text(
+                        tafseerText!,
+                        style: AppStyles.styleCairoMedium15white(
+                          context,
+                        ).copyWith(fontSize: 18, height: 1.6),
+                        textAlign: TextAlign.justify,
+                        textDirection: TextDirection.rtl,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      } else {
+        showMessage('تعذر جلب التفسير. يرجى التحقق من الاتصال.');
+      }
+    }
+  } catch (e) {
+    if (context.mounted) {
+      Navigator.of(context).pop(); // Close loading dialog
+      showMessage('حدث خطأ أثناء جلب التفسير: $e');
+    }
+  }
 }
 
 double currentSpeed = 1.0; // Track the current speed of playback
@@ -145,7 +183,6 @@ void forward(AudioPlayerHandler audioHandler) async {
 Future<void> shareAudio(String audioUrl) async {
   Share.share(audioUrl);
 }
-
 
 void showMessage(String message) {
   Fluttertoast.showToast(

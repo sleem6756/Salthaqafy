@@ -125,7 +125,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
     _handleAudioAction(() async {
       final currentURL = globalAudioHandler.mediaItem.value?.extras?['URL'];
       final isPlaying =
-          globalAudioHandler.playbackState.value?.playing ?? false;
+          globalAudioHandler.playbackState.value.playing ?? false;
 
       if (currentURL == widget.audioUrl && isPlaying) {
         await globalAudioHandler.pause();
@@ -173,7 +173,7 @@ class _SurahListeningItemState extends State<SurahListeningItem> {
                   final currentURL =
                       globalAudioHandler.mediaItem.value?.extras?['URL'];
                   final isPlaying =
-                      globalAudioHandler.playbackState.value?.playing ?? false;
+                      globalAudioHandler.playbackState.value.playing ?? false;
 
                   if (currentURL == widget.audioUrl && isPlaying) {
                     // Same track playing - pause it

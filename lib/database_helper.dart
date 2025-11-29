@@ -51,9 +51,27 @@ class DatabaseHelper {
     // Create a new database
     return await openDatabase(
       path,
-      version: 4, // Ensure this matches your new schema version
+      version: 5, // Incremented version
       onCreate: (db, version) async {
-        await db.execute('''
+        await _createTables(db);
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 5) {
+          await db.execute('''
+            CREATE TABLE IF NOT EXISTS tafseer(
+              surah INTEGER,
+              verse INTEGER,
+              text TEXT,
+              PRIMARY KEY (surah, verse)
+            )
+          ''');
+        }
+      },
+    );
+  }
+
+  Future<void> _createTables(Database db) async {
+    await db.execute('''
         CREATE TABLE favorites(
           id INTEGER PRIMARY KEY AUTOINCREMENT,
           surahIndex INTEGER,
@@ -63,34 +81,39 @@ class DatabaseHelper {
           url TEXT
         )
       ''');
-        await db.execute('''
+    await db.execute('''
         CREATE TABLE bookmarks(
            id INTEGER PRIMARY KEY AUTOINCREMENT,
            surahName TEXT,
            pageNumber INTEGER
          )
-
        ''');
-        await db.execute('''
+    await db.execute('''
        CREATE TABLE fontSize(
            fontSize DOUBLE
          )
        ''');
-        await db.execute(
-          'CREATE TABLE theme (id INTEGER PRIMARY KEY, themeMode TEXT)',
-        );
-        await db.execute('''
+    await db.execute(
+      'CREATE TABLE theme (id INTEGER PRIMARY KEY, themeMode TEXT)',
+    );
+    await db.execute('''
          CREATE TABLE favAzkarPage (
            $columnId INTEGER PRIMARY KEY AUTOINCREMENT,
            $columnCategory TEXT NOT NULL,
            $columnZekerList TEXT NOT NULL
          )
        ''');
-        return db.execute(
-          'CREATE TABLE settings (id INTEGER PRIMARY KEY, notificationsEnabled INTEGER)',
-        );
-      },
+    await db.execute(
+      'CREATE TABLE settings (id INTEGER PRIMARY KEY, notificationsEnabled INTEGER)',
     );
+    await db.execute('''
+        CREATE TABLE tafseer(
+          surah INTEGER,
+          verse INTEGER,
+          text TEXT,
+          PRIMARY KEY (surah, verse)
+        )
+      ''');
   }
 
   Future<void> insertFavorite(FavModel fav) async {
@@ -100,6 +123,29 @@ class DatabaseHelper {
       fav.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+  }
+
+  // Tafseer Methods
+  Future<void> insertTafseer(int surah, int verse, String text) async {
+    final db = await database;
+    await db.insert('tafseer', {
+      'surah': surah,
+      'verse': verse,
+      'text': text,
+    }, conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<String?> getTafseer(int surah, int verse) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'tafseer',
+      where: 'surah = ? AND verse = ?',
+      whereArgs: [surah, verse],
+    );
+    if (maps.isNotEmpty) {
+      return maps.first['text'] as String;
+    }
+    return null;
   }
 
   Future<List<FavModel>> getFavorites() async {

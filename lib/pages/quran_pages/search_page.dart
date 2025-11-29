@@ -39,6 +39,14 @@ class SearchPageState extends State<SearchPage> {
 
   void _search(String query) {
     try {
+      // Handle empty or whitespace-only queries
+      if (query.trim().isEmpty) {
+        setState(() {
+          searchResults = [];
+        });
+        return;
+      }
+
       // Normalize the query
       String processedQuery = normalizeArabic(query);
       List<Map<String, dynamic>> results = [];
@@ -80,9 +88,14 @@ class SearchPageState extends State<SearchPage> {
                 controller: _searchController,
                 focusNode: _searchFocusNode,
                 decoration: InputDecoration(
-                  suffixIcon: Icon(
-                    Icons.search,
-                    color: AppStyles.styleRajdhaniBold20(context).color,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      Icons.search,
+                      color: AppStyles.styleRajdhaniBold20(context).color,
+                    ),
+                    onPressed: () {
+                      _search(_searchController.text);
+                    },
                   ),
                   labelText: "البحث",
                   border: const OutlineInputBorder(),
@@ -90,7 +103,7 @@ class SearchPageState extends State<SearchPage> {
                     borderSide: BorderSide(color: Colors.blueGrey, width: 1.0),
                   ),
                 ),
-                onChanged: _search,
+                onSubmitted: _search,
               ),
             ),
             if (searchResults.isNotEmpty)

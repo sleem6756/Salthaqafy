@@ -15,6 +15,7 @@ import '../../widgets/quran_container_down.dart';
 import '../../widgets/quran_container_up.dart';
 import '../../widgets/surah_border.dart';
 import '../../widgets/verse_buttons_widget.dart';
+import '../../widgets/basmalla_widget.dart';
 import 'quran_font_size_provider.dart';
 
 class SurahPage extends StatefulWidget {
@@ -212,6 +213,20 @@ class _SurahPageState extends State<SurahPage> {
                     return entry.value.map((verseEntry) {
                       int verseIndex = verseEntry['verseNumber'];
                       String verseText = verseEntry['verseText'];
+
+                      // FINAL FIX: BISMILLAH APPEARS ONLY ONCE — NO DUPLICATION
+                      if (verseIndex == 1 &&
+                          surahNumber != 1 &&
+                          surahNumber != 9) {
+                        // Dynamically get Bismillah from Surah Al-Fatihah Verse 1
+                        String bismillah = quran.getVerse(1, 1);
+                        if (verseText.startsWith(bismillah)) {
+                          verseText = verseText
+                              .substring(bismillah.length)
+                              .trim();
+                        }
+                      }
+
                       bool isHighlighted =
                           highlightedVerses[surahNumber]?[verseIndex] ?? false;
 
@@ -275,18 +290,14 @@ class _SurahPageState extends State<SurahPage> {
                               alignment: PlaceholderAlignment.middle,
                               child: SurahBorder(surahNumber: surahNumber),
                             ),
-                            if (surahNumber != 1 && surahNumber != 9)
-                              TextSpan(
-                                text: '${AlQuran.getBismillah.unicode}\n\n',
-                                style: AppStyles.styleAmiriMedium11(context)
-                                    .copyWith(
-                                      height: 1,
-                                      fontSize: min(
-                                        fontSizeProvider.fontSize - 10,
-                                        34,
-                                      ),
-                                    ),
+                            const TextSpan(text: "\n"),
+                            if (surahNumber != 1 && surahNumber != 9) ...[
+                              const WidgetSpan(
+                                alignment: PlaceholderAlignment.middle,
+                                child: BasmalaWidget(),
                               ),
+                              const TextSpan(text: "\n"),
+                            ],
                           ],
                           ...wordSpans,
                         ],

@@ -104,7 +104,7 @@ class _AzkarPageState extends State<AzkarPage> {
               context,
             ).copyWith(color: Colors.grey),
             tabs: const [
-              Tab(text: "الأذكار"),
+              Tab(text: "ذكر"),
               Tab(text: "الرقية"),
             ],
           ),

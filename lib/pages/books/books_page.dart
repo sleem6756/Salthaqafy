@@ -89,9 +89,16 @@ class _BooksPageState extends State<BooksPage> {
           return Column(
             children: [
               // Certificate Image
+              // MADE RESPONSIVE - Image height adapts to screen size
               Container(
                 width: double.infinity,
-                height: 200,
+                height:
+                    MediaQuery.of(context).size.height *
+                    0.25, // 25% of screen height
+                constraints: const BoxConstraints(
+                  minHeight: 150, // Minimum height for small phones
+                  maxHeight: 300, // Maximum height for tablets
+                ),
                 decoration: const BoxDecoration(
                   image: DecorationImage(
                     image: AssetImage('assets/cert.jpg'),

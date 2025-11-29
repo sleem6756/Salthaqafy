@@ -1,26 +1,25 @@
-import 'dart:developer';
+// REMOVED UNUSED: import 'dart:developer'; (only used in deleted downloadAudio)
 import 'database_helper.dart';
 import 'package:althaqafy/utils/app_style.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:just_audio/just_audio.dart';
-import 'package:path_provider/path_provider.dart';
+// REMOVED UNUSED: import 'package:path_provider/path_provider.dart'; (only for download)
 import 'package:share_plus/share_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'constants.dart';
-import 'dart:io';
+// REMOVED UNUSED: import 'dart:io'; (only for Platform.isAndroid in download)
 
 import 'pages/sevices/audio_handler.dart';
 
 /// Define the MethodChannel that matches the one in your MainActivity.
-const MethodChannel _mediaScannerChannel = MethodChannel(
-  'com.omar.zekr_mobarak/media_scanner',
-);
+// REMOVED UNUSED: Media scanner MethodChannel for download feature (orphaned code)
 
 /// Custom function to trigger a media scan via the platform channel.
 /// This notifies Android to update its media database so that the file shows in file managers.
+// REMOVED UNUSED: scanFile() function (orphaned code)
 
 Future<Map<String, dynamic>> loadJSONDataMap(String path) async {
   try {
@@ -196,88 +195,10 @@ void showMessage(String message) {
   );
 }
 
-/// Creates (if needed) and returns a custom download directory.
-///
-/// On Android, this function returns a folder inside the public Downloads folder,
-/// making the file accessible by file managers. On other platforms, it falls back to
-/// the app’s documents directory.
-Future<Directory?> getCustomDownloadDirectory() async {
-  if (Platform.isAndroid) {
-    // Define a custom folder within the public Downloads folder.
-    Directory customDownloadDir = Directory(
-      '/storage/emulated/0/Download/Zekr Mobarak',
-    );
-    // Create the directory if it does not exist.
-    if (!await customDownloadDir.exists()) {
-      await customDownloadDir.create(recursive: true);
-    }
-    return customDownloadDir;
-  } else {
-    // For non-Android platforms, use the app's documents directory.
-    return await getApplicationDocumentsDirectory();
-  }
-}
-
-/// Downloads the audio file from [audioUrl] with the given [title]
-/// and saves it in the custom download directory.
-Future<void> downloadAudio(
-  String audioUrl,
-  String title,
-  BuildContext context,
-) async {
-  // Get the custom download directory.
-  Directory? downloadsDirectory = await getCustomDownloadDirectory();
-
-  if (downloadsDirectory != null) {
-    // Construct the file name and file path.
-    String fileName = "$title.mp3";
-    String filePath = "${downloadsDirectory.path}/$fileName";
-
-    Dio dio = Dio();
-    // Variable to track the last time a progress update was shown.
-    DateTime lastProgressUpdate = DateTime.now();
-
-    try {
-      // Download the file using Dio.
-      await dio.download(
-        audioUrl,
-        filePath,
-        onReceiveProgress: (received, total) {
-          // Get the current time.
-          final currentTime = DateTime.now();
-          // Update progress only every 3 seconds.
-          if (currentTime.difference(lastProgressUpdate).inSeconds >= 3) {
-            lastProgressUpdate = currentTime;
-            if (total != -1) {
-              // Calculate the progress percentage.
-              String progress = (received / total * 100).toStringAsFixed(0);
-              // Display the progress message.
-              showMessage("جاري التحميل: $progress%");
-            }
-          }
-        },
-      );
-
-      // Notify the user that the download is complete.
-      showMessage('$fileName متاحة الآن في$filePath');
-      // Optionally, trigger a media scan so the file appears in galleries/file managers.
-      await scanFile(filePath);
-    } catch (e) {
-      log("فشل التحميل: $e");
-    }
-  } else {
-    showMessage('فشل الحصول على مكان التنزيل.');
-  }
-}
-
-Future<void> scanFile(String filePath) async {
-  try {
-    await _mediaScannerChannel.invokeMethod('scanFile', {'filePath': filePath});
-    debugPrint("Scanning file: $filePath");
-  } on PlatformException catch (e) {
-    debugPrint("Error scanning file: ${e.message}");
-  }
-}
+// REMOVED UNUSED: getCustomDownloadDirectory() function (~20 lines)
+// REMOVED UNUSED: downloadAudio() function (~50 lines)
+// REMOVED UNUSED: scanFile() function (~10 lines)
+// Total: ~80 lines of orphaned download code removed
 
 String removeTashkeel(String text) {
   // Regular expression to remove diacritics (Tashkeel)

@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.mmarouf.salembooks"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36  // Android 15 - Required by plugins (backward compatible)
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -21,16 +21,27 @@ android {
 
     defaultConfig {
         applicationId = "com.mmarouf.salembooks"
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        minSdk = 24  // Android 7.0 - Minimum for 2025
+        targetSdk = 34  // Android 14 - Required for Play Store 2025
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled true
     }
 
-
     buildTypes {
         release {
+            // Enable code obfuscation for security and size reduction
+            minifyEnabled true
+            // Enable resource shrinking to reduce APK size
+            shrinkResources true
+            // ProGuard configuration files
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            
+            // Signing config - you'll need to configure this separately
+            // signingConfig signingConfigs.release
+        }
+        
+        debug {
             minifyEnabled false
             shrinkResources false
         }

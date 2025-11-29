@@ -38,18 +38,30 @@ class ListeningPage extends StatelessWidget {
       backgroundColor: AppColors.kPrimaryColor,
       body: Padding(
         padding: const EdgeInsets.all(10.0),
-        child: GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2, // 2 items per row
-            crossAxisSpacing: 10.0,
-            mainAxisSpacing: 10.0,
-            childAspectRatio: 1.0, // Square aspect ratio
-          ),
-          itemCount: buttonData.length,
-          itemBuilder: (context, index) {
-            return ListeningButtons(
-              buttonText: buttonData[index]['text'],
-              builder: (context) => buttonData[index]['page'],
+        // MADE RESPONSIVE - GridView adapts columns based on screen width
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final screenWidth = MediaQuery.of(context).size.width;
+            final crossAxisCount = screenWidth > 800
+                ? 4 // Desktop/large tablets
+                : screenWidth > 600
+                ? 3 // Small tablets
+                : 2; // Phones
+
+            return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxisCount,
+                crossAxisSpacing: 10.0,
+                mainAxisSpacing: 10.0,
+                childAspectRatio: 1.0, // Square aspect ratio
+              ),
+              itemCount: buttonData.length,
+              itemBuilder: (context, index) {
+                return ListeningButtons(
+                  buttonText: buttonData[index]['text'],
+                  builder: (context) => buttonData[index]['page'],
+                );
+              },
             );
           },
         ),

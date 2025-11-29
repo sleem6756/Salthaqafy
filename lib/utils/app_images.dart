@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_single_quotes
 class Assets {
   Assets._();
-  
+
   /// Assets for images3rob3
   /// assets/images/3rob3.png
   static const String images3rob3 = "assets/images/3rob3.png";
@@ -30,9 +30,7 @@ class Assets {
   /// assets/images/chio5.jpg
   static const String imagesChio5 = "assets/images/chio5.jpg";
 
-  /// Assets for imagesDocumentDownload
-  /// assets/images/document-download.svg
-  static const String imagesDocumentDownload = "assets/images/document-download.svg";
+  // REMOVED UNUSED: imagesDocumentDownload (download feature orphaned)
 
   /// Assets for imagesForward
   /// assets/images/forward.svg
@@ -120,7 +118,8 @@ class Assets {
 
   /// Assets for imagesRightborderRemovebgPreview
   /// assets/images/rightborder-removebg-preview.png
-  static const String imagesRightborderRemovebgPreview = "assets/images/rightborder-removebg-preview.png";
+  static const String imagesRightborderRemovebgPreview =
+      "assets/images/rightborder-removebg-preview.png";
 
   /// Assets for imagesRob3
   /// assets/images/rob3.png
@@ -146,7 +145,6 @@ class Assets {
   /// assets/images/Search.svg
   static const String imagesSearch = "assets/images/Search.svg";
 
-
   /// Assets for imagesShare
   /// assets/images/share.svg
   static const String imagesShare = "assets/images/share.svg";
@@ -159,4 +157,3 @@ class Assets {
   /// assets/images/Vector.svg
   static const String imagesVector = "assets/images/Vector.svg";
 }
-

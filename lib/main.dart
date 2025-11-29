@@ -16,7 +16,7 @@ import 'cubit/azkar_cubit/azkar_cubit.dart';
 
 import 'providers/book_provider.dart';
 import 'model/azkar_model/azkar_model/azkar_model.dart';
-import 'pages/azkar_pages/notification_service.dart';
+// REMOVED UNUSED: import 'pages/azkar_pages/notification_service.dart';
 import 'pages/main_navigation.dart';
 import 'pages/quran_pages/book_mark_provider.dart';
 import 'pages/quran_pages/quran_data_provider.dart';
@@ -56,8 +56,7 @@ Future<void> main() async {
     databaseFactory = databaseFactoryFfi;
   }
 
-  // Initialize notification service
-  await NotificationService.init();
+  // REMOVED UNUSED: await NotificationService.init();
 
   Bloc.observer = SimpleBlocObserver();
   // Initialize the global audio handler.

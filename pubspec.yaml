@@ -32,44 +32,44 @@ dependencies:
   al_quran: ^0.1.1+5
   animated_notch_bottom_bar: ^1.0.3
   audio_service: ^0.18.18
-  audio_session: ^0.2.1
+  # REMOVED UNUSED: audio_session (just_audio handles sessions internally)
   audioplayers: ^6.1.0
   bloc: ^9.0.0
-  change_app_package_name: ^1.4.0
+  # REMOVED UNUSED: change_app_package_name (one-time CLI tool)
   connectivity_plus: ^6.0.5
-  device_preview: ^1.2.0
+  # REMOVED UNUSED: device_preview (dev tool, not used in production)
   dio: ^5.7.0
   equatable: ^2.0.3
   flutter:
     sdk: flutter
   flutter_bloc: ^9.1.0
-  flutter_local_notifications: ^19.1.0
+  # REMOVED UNUSED: flutter_local_notifications (only for orphaned NotificationService)
   flutter_localization: ^0.3.2
   flutter_localizations:
     sdk: flutter
   flutter_svg: ^2.0.10+1
-  flutter_html: ^3.0.0
-  flutter_tts: ^4.0.2
+  # REMOVED UNUSED: flutter_html
+  # REMOVED UNUSED: flutter_tts (no text-to-speech feature in app)
   fluttertoast: ^8.2.10
-  geolocator: ^13.0.1
+  # REMOVED UNUSED: geolocator (Qibla feature was removed, location permissions orphaned)
   hive: ^2.2.3
   http: ^1.2.2
-  jhijri: ^1.0.0
+  # REMOVED UNUSED: jhijri (no Hijri calendar feature in app)
   just_audio: ^0.10.1 
   modal_progress_hud_nsn: ^0.5.1
   path: ^1.9.0
   path_provider: ^2.1.4
-  permission_handler: ^12.0.0+1
+  # REMOVED UNUSED: permission_handler (no permission requests in code)
   provider: ^6.0.1
   quran: ^1.0.7
-  recase: ^4.0.0
+  # REMOVED UNUSED: recase
   rxdart: ^0.28.0
   share_plus: ^11.0.0
   shared_preferences: ^2.0.8
   shimmer: ^3.0.0
   sqflite: ^2.3.3+2
   sqflite_common_ffi: ^2.3.4+4
-  timezone: ^0.10.0
+  # REMOVED UNUSED: timezone (only for NotificationService scheduling)
   url_launcher: ^6.3.2
 
 

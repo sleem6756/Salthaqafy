@@ -104,12 +104,19 @@ class _SplashScreenState extends State<SplashScreen>
                   AnimatedBuilder(
                     animation: _logoAnimation,
                     builder: (context, child) {
+                      // MADE RESPONSIVE - Logo scales to 40% of screen width for tablets
+                      final logoSize = MediaQuery.of(context).size.width * 0.4;
+                      final clampedSize = logoSize.clamp(
+                        150.0,
+                        300.0,
+                      ); // Min 150, Max 300
+
                       return Transform.scale(
                         scale: _logoAnimation.value,
                         child: Image.asset(
                           'assets/logo.png',
-                          width: 200,
-                          height: 200,
+                          width: clampedSize,
+                          height: clampedSize,
                         ),
                       );
                     },

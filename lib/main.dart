@@ -79,10 +79,14 @@ Future<void> main() async {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return MaterialApp(
-            home: const AppIconLoader(), // Use your animated app icon here
+            home: const AppIconLoader(),
+            debugShowCheckedModeBanner: false,
           );
         } else if (snapshot.hasError) {
-          return MaterialApp(home: ErrorScreen(snapshot.error.toString()),debugShowCheckedModeBanner: false,);
+          return MaterialApp(
+            home: ErrorScreen(snapshot.error.toString()),
+            debugShowCheckedModeBanner: false,
+          );
         }
         return MyApp(preloadedAzkar: snapshot.data as List<AzkarModel>);
       },

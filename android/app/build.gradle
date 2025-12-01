@@ -4,9 +4,15 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
 android {
     namespace = "com.mmarouf.salembooks"
-    compileSdk = 36  // Android 15 - Required by plugins (backward compatible)
+    compileSdk = 36  // Android 15 - Required by plugins (backward compatible)-->33
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -22,23 +28,28 @@ android {
     defaultConfig {
         applicationId = "com.mmarouf.salembooks"
         minSdk = 24  // Android 7.0 - Minimum for 2025
-        targetSdk = 34  // Android 14 - Required for Play Store 2025
+        targetSdk = 34  // Android 14 - Required for Play Store 2025-->33
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled true
     }
 
+    signingConfigs {
+        release {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+    }
+}
     buildTypes {
         release {
-            // Enable code obfuscation for security and size reduction
             minifyEnabled true
-            // Enable resource shrinking to reduce APK size
             shrinkResources true
-            // ProGuard configuration files
+            // proguardEnabled true
+            // useProguard false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            
-            // Signing config - you'll need to configure this separately
-            // signingConfig signingConfigs.release
+            signingConfig signingConfigs.release
         }
         
         debug {

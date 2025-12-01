@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:quran/quran.dart' as quran;
 
 import '../methods.dart';
+import '../utils/app_style.dart';
+import '../constants.dart';
 
 class VerseButtons extends StatefulWidget {
   const VerseButtons({
@@ -87,15 +89,27 @@ class _VerseButtonsState extends State<VerseButtons> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
-          color: Colors.lightGreenAccent.withOpacity(0.6),
+          color: AppColors.kSecondaryColor.withOpacity(0.95),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-        child: Row(
+        child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            IconButton(
-              onPressed: () {
+            // Play/Pause Action
+            _buildActionItem(
+              icon: isSoundPlaying ? Icons.pause_rounded : Icons.play_arrow,
+              label: 'تشغيل',
+              onTap: () {
                 _checkInternetConnection();
                 if (_connectivityStatus == ConnectivityResult.none) {
                   showMessage('لا يتوفر اتصال بالانترنت');
@@ -108,28 +122,28 @@ class _VerseButtonsState extends State<VerseButtons> {
                   );
                 }
               },
-              icon: Icon(
-                isSoundPlaying ? Icons.pause_rounded : Icons.play_arrow,
-              ),
-              color: Colors.green,
-              iconSize: 28,
-              tooltip: 'تشغيل الاية',
             ),
-            IconButton(
-              onPressed: () {
+            const Divider(color: Colors.white24, height: 1),
+
+            // Tafseer Action
+            _buildActionItem(
+              icon: Icons.tips_and_updates_rounded,
+              label: 'تفسير',
+              onTap: () {
                 showTafseer(
                   surahNumber: widget.currentSurahIndex,
                   verseNumber: widget.highlightedVerse,
                   context: context,
                 );
               },
-              icon: const Icon(Icons.tips_and_updates_rounded),
-              color: Colors.green,
-              iconSize: 28,
-              tooltip: 'تفسير الاية',
             ),
-            IconButton(
-              onPressed: () {
+            const Divider(color: Colors.white24, height: 1),
+
+            // Copy Action
+            _buildActionItem(
+              icon: Icons.copy_rounded,
+              label: 'نسخ',
+              onTap: () {
                 // Copy verse text to clipboard
                 final verseText = quran.getVerse(
                   widget.currentSurahIndex,
@@ -138,10 +152,33 @@ class _VerseButtonsState extends State<VerseButtons> {
                 Clipboard.setData(ClipboardData(text: verseText));
                 showMessage('تم نسخ الآية');
               },
-              icon: const Icon(Icons.copy_rounded),
-              color: Colors.green,
-              iconSize: 28,
-              tooltip: 'نسخ الآية',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionItem({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, color: Colors.white, size: 24),
+            const SizedBox(width: 12),
+            Text(
+              label,
+              style: AppStyles.styleCairoMedium15white(
+                context,
+              ).copyWith(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ],
         ),

@@ -27,30 +27,35 @@ The Quran Reading Page is a core feature of the Althaqafy app, providing users w
 When a verse is selected, users can:
 - **Play Audio**: Stream verse recitation using `audioplayers` package.
 - **Show Tafseer**: Display interpretation (currently shows "not available" message).
-- **Share Audio**: Share the audio URL using `share_plus`.
-- **Download Audio**: Download MP3 file using `dio` and save to device storage.
+- **Copy Verse**: Copy the verse text to clipboard using `flutter/services.dart`.
 
-### 5. Bookmarking System
+### 5. Basmala Display
+- **Description**: Dedicated widget for displaying "Bismillah" with proper styling.
+- **Implementation**: `BasmalaWidget` with gold color, Amiri font, and centered alignment.
+- **Logic**: Dynamically removes Bismillah from verse 1 text to prevent duplication.
+- **Layout**: Positioned between surah border and verse text with proper spacing.
+
+### 6. Bookmarking System
 - **Description**: Save favorite pages for quick access.
 - **Implementation**: Uses `BookmarkProvider` with local database storage.
 - **UI**: Toggle bookmark button in bottom container.
 - **Navigation**: Dedicated bookmarks tab in main reading page.
 
-### 6. Search Functionality
+### 7. Search Functionality
 - **Description**: Search for specific verses or content.
 - **Integration**: Button in bottom container navigates to search page.
 
-### 7. Navigation Tools
+### 8. Navigation Tools
 - **Index**: Navigate to surah list organized by Juz.
 - **Bookmarks**: Access saved pages.
 - **Doaa Khatm**: Special prayers for Quran completion.
 
-### 8. Header Information
+### 9. Header Information
 - **Surah Details**: Name, revelation place (Makkah/Madinah), verse count.
 - **Juz and Hizb**: Current Juz number and Hizb quarter.
 - **Page Indicators**: Visual indicators for page layout.
 
-### 9. Footer Controls
+### 10. Footer Controls
 - **Search Bar**: Quick access to search functionality.
 - **Bookmark Toggle**: Add/remove page bookmarks.
 - **Navigation Buttons**: Links to index, bookmarks, and Khatm prayer.
@@ -61,8 +66,9 @@ When a verse is selected, users can:
 ### Data Flow
 1. **Page Loading**: When a page is accessed, `pageData` provides surah and verse ranges.
 2. **Text Rendering**: Verses are displayed using `RichText` with custom spans for each word.
-3. **Font Adaptation**: Dynamic font sizing based on word length for optimal display.
-4. **Audio Integration**: Verse audio URLs generated using `quran.getAudioURLByVerse()`.
+3. **Bismillah Handling**: For surahs 2-113, Bismillah is displayed via `BasmalaWidget` and removed from verse 1 text.
+4. **Font Adaptation**: Dynamic font sizing based on word length for optimal display.
+5. **Audio Integration**: Verse audio URLs generated using `quran.getAudioURLByVerse()`.
 
 ### User Workflow
 1. **Access**: From home page → Quran → Reading.
@@ -77,6 +83,37 @@ When a verse is selected, users can:
 - **Bookmarks**: `BookmarkProvider` with database persistence.
 - **Page State**: Local state management within `SurahPage`.
 
+## Technical Implementation
+
+### Key Classes
+- **`SurahPage`**: Main reading interface with page navigation.
+- **`BasmalaWidget`**: Dedicated widget for Bismillah display with proper styling.
+- **`QuranContainerUP`**: Header displaying surah and location info.
+- **`QuranContainerDown`**: Footer with controls and navigation.
+- **`VerseButtons`**: Action buttons for selected verses (play, tafseer, copy).
+- **`FontSlider`**: Font size adjustment widget.
+
+### Data Structures
+- **Page Data**: Uses `pageData` array mapping pages to surah/verse ranges.
+- **Verse Highlighting**: Map structure tracking highlighted verses.
+- **Font Sizing**: Dynamic calculation based on text width and screen size.
+
+### Bismillah Logic
+```dart
+// Dynamic Bismillah removal to prevent duplication
+if (verseIndex == 1 && surahNumber != 1 && surahNumber != 9) {
+  String bismillah = quran.getVerse(1, 1);
+  if (verseText.startsWith(bismillah)) {
+    verseText = verseText.substring(bismillah.length).trim();
+  }
+}
+```
+
+### Performance Considerations
+- **Lazy Loading**: Pages load content only when accessed.
+- **Debounced Saving**: Font size changes saved with 100ms debounce.
+- **Memory Management**: Proper disposal of audio players and listeners.
+
 ## Packages and Dependencies
 
 ### Core Quran Packages
@@ -90,37 +127,15 @@ When a verse is selected, users can:
 ### Audio and Media
 - **`audioplayers: ^6.1.0`**: Audio playback for verse recitation.
 - **`just_audio: ^0.10.1`**: Alternative audio handling (used in listening features).
-- **`dio: ^5.7.0`**: HTTP client for audio downloads.
-- **`share_plus: ^11.0.0`**: Sharing functionality.
+- **`connectivity_plus: ^6.0.5`**: Internet connectivity checks.
 
 ### Storage and Persistence
 - **`shared_preferences: ^2.0.8`**: Simple key-value storage.
 - **`sqflite: ^2.3.3+2`**: SQLite database for bookmarks and settings.
-- **`path_provider: ^2.1.4`**: File system paths for downloads.
+- **`path_provider: ^2.1.4`**: File system paths.
 
-### Utilities
-- **`connectivity_plus: ^6.0.5`**: Internet connectivity checks.
-- **`permission_handler: ^12.0.0+1`**: Storage permissions for downloads.
-- **`timezone: ^0.10.0`**: Time-related utilities.
-
-## Technical Implementation
-
-### Key Classes
-- **`SurahPage`**: Main reading interface with page navigation.
-- **`QuranContainerUP`**: Header displaying surah and location info.
-- **`QuranContainerDown`**: Footer with controls and navigation.
-- **`VerseButtons`**: Action buttons for selected verses.
-- **`FontSlider`**: Font size adjustment widget.
-
-### Data Structures
-- **Page Data**: Uses `pageData` array mapping pages to surah/verse ranges.
-- **Verse Highlighting**: Map structure tracking highlighted verses.
-- **Font Sizing**: Dynamic calculation based on text width and screen size.
-
-### Performance Considerations
-- **Lazy Loading**: Pages load content only when accessed.
-- **Debounced Saving**: Font size changes saved with 100ms debounce.
-- **Memory Management**: Proper disposal of audio players and listeners.
+### System Integration
+- **`flutter/services.dart`**: Clipboard functionality for copying verses.
 
 ## Usage
 
@@ -133,15 +148,28 @@ When a verse is selected, users can:
 ### Advanced Features
 1. **Font Adjustment**: Use slider in bottom panel.
 2. **Verse Interaction**: Long-press verse → select actions.
-3. **Bookmarking**: Tap bookmark icon to save page.
-4. **Audio**: Play, share, or download verse audio.
-5. **Navigation**: Use index, bookmarks, or search for quick access.
+3. **Copy Verses**: Copy selected verses to clipboard.
+4. **Audio**: Play verse recitation with internet connection.
+5. **Bookmarking**: Save important pages for later reference.
+6. **Navigation**: Use index, bookmarks, or search for quick access.
 
 ### Accessibility
 - **Arabic Support**: RTL layout and Arabic fonts (Uthmanic, Amiri, Cairo).
 - **Touch-Friendly**: Large touch targets for all interactive elements.
 - **Visual Feedback**: Clear highlighting and animations.
-- **Offline Capability**: Core reading works without internet.
+- **Offline Capability**: Core reading works without internet (audio requires connection).
+
+## Recent Updates
+
+### Basmala Enhancement
+- **New BasmalaWidget**: Dedicated component with proper gold styling and spacing.
+- **Dynamic Text Handling**: Automatic removal of Bismillah from verse 1 to prevent duplication.
+- **Improved Layout**: Better visual separation between surah borders and Bismillah.
+
+### Simplified Verse Actions
+- **Streamlined UI**: Reduced from 4 to 3 action buttons for cleaner interface.
+- **Copy Functionality**: Direct clipboard integration for verse sharing.
+- **Removed Dependencies**: Eliminated share/download features for simpler maintenance.
 
 ## Future Enhancements
 

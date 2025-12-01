@@ -7,7 +7,7 @@ import android.media.MediaScannerConnection
 
 class MainActivity : FlutterFragmentActivity() {
   // This channel name must match the one used in the Dart code.
-  private val CHANNEL = "com.omar.zekr_mobarak/media_scanner"
+  private val CHANNEL = "com.mmarouf.salembooks/media_scanner"
 
   override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
     super.configureFlutterEngine(flutterEngine)

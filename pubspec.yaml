@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 2.0.0+2
+version: 3.0.0+3
 
 environment:
   sdk: ^3.9.2
@@ -32,44 +32,33 @@ dependencies:
   al_quran: ^0.1.1+5
   animated_notch_bottom_bar: ^1.0.3
   audio_service: ^0.18.18
-  # REMOVED UNUSED: audio_session (just_audio handles sessions internally)
-  audioplayers: ^6.1.0
-  bloc: ^9.0.0
-  # REMOVED UNUSED: change_app_package_name (one-time CLI tool)
-  connectivity_plus: ^6.0.5
-  # REMOVED UNUSED: device_preview (dev tool, not used in production)
-  dio: ^5.7.0
-  equatable: ^2.0.3
+  audioplayers: ^6.5.1
+  bloc: ^9.1.0
+  connectivity_plus: ^7.0.0
+  dio: ^5.9.0
+  equatable: ^2.0.7
   flutter:
     sdk: flutter
-  flutter_bloc: ^9.1.0
-  # REMOVED UNUSED: flutter_local_notifications (only for orphaned NotificationService)
-  flutter_localization: ^0.3.2
+  flutter_bloc: ^9.1.1
+  flutter_localization: ^0.3.3
   flutter_localizations:
     sdk: flutter
-  flutter_svg: ^2.0.10+1
-  # REMOVED UNUSED: flutter_html
-  # REMOVED UNUSED: flutter_tts (no text-to-speech feature in app)
-  fluttertoast: ^8.2.10
-  # REMOVED UNUSED: geolocator (Qibla feature was removed, location permissions orphaned)
+  flutter_svg: ^2.2.3
+  fluttertoast: ^9.0.0
   hive: ^2.2.3
-  http: ^1.2.2
-  # REMOVED UNUSED: jhijri (no Hijri calendar feature in app)
-  just_audio: ^0.10.1 
+  http: ^1.6.0
+  just_audio: ^0.10.5
   modal_progress_hud_nsn: ^0.5.1
-  path: ^1.9.0
-  path_provider: ^2.1.4
-  # REMOVED UNUSED: permission_handler (no permission requests in code)
-  provider: ^6.0.1
-  quran: ^1.0.7
-  # REMOVED UNUSED: recase
+  path: ^1.9.1
+  path_provider: ^2.1.5
+  provider: ^6.1.5+1
+  quran: ^1.4.1
   rxdart: ^0.28.0
-  share_plus: ^11.0.0
-  shared_preferences: ^2.0.8
+  share_plus: ^12.0.1
+  shared_preferences: ^2.5.3
   shimmer: ^3.0.0
-  sqflite: ^2.3.3+2
-  sqflite_common_ffi: ^2.3.4+4
-  # REMOVED UNUSED: timezone (only for NotificationService scheduling)
+  sqflite: ^2.4.2
+  sqflite_common_ffi: ^2.4.0
   url_launcher: ^6.3.2
 
 
@@ -88,7 +77,7 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
-   flutter_launcher_icons: ^0.13.1
+   flutter_launcher_icons: ^0.14.4
 
 flutter_icons:
      android: "assets/logo.png"

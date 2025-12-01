@@ -63,7 +63,7 @@ Future<void> main() async {
   globalAudioHandler = await AudioService.init(
     builder: () => AudioPlayerHandler(),
     config: const AudioServiceConfig(
-      androidNotificationChannelId: 'com.omar.zekr_mobarak.channel.audio',
+      androidNotificationChannelId: 'com.mmarouf.salembooks.channel.audio',
       androidNotificationChannelName: 'تشغيل القرآن',
       androidNotificationOngoing: true,
       androidStopForegroundOnPause: true,

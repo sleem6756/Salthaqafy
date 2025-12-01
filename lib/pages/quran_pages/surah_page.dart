@@ -1,5 +1,3 @@
-import 'dart:math';
-import 'package:al_quran/al_quran.dart';
 import 'dart:async';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';

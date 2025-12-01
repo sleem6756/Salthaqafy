@@ -1,9 +1,6 @@
 name: Build & Upload iOS
 
-on:
-  push:
-    tags:
-      - 'v*'
+on: [push, workflow_dispatch]
 
 jobs:
   build:
@@ -22,7 +19,7 @@ jobs:
 
       - name: Build IPA
         run: |
-          flutter build ipa --release --export-options-plist=ios/ExportOptions.plist
+          flutter build ipa --release
 
       - name: Upload to App Store Connect
         uses: apple-actions/upload-app-store@v1

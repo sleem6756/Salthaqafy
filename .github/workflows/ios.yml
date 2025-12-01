@@ -22,9 +22,9 @@ jobs:
           flutter build ipa --release
 
       - name: Upload to App Store Connect
-        uses: apple-actions/upload-app-store@v1
+        uses: apple-actions/upload-testflight-build@v3
         with:
+          app-path: 'build/ios/ipa/*.ipa'
           issuer-id: ${{ secrets.APPLE_ISSUER_ID }}
           api-key-id: ${{ secrets.APPLE_KEY_ID }}
           api-private-key: ${{ secrets.APPLE_PRIVATE_KEY }}
-          app-path: build/ios/ipa/*.ipa

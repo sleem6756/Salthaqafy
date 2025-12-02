@@ -11,8 +11,9 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.0'  # ← Dart 3.9.2 متوافق مع pubspec.yaml
+          flutter-version: '3.27.0'  # ← Dart 3.9.2 متوافق مع ^3.9.2
           channel: stable
+          cache: true
 
       - name: Install dependencies
         run: flutter pub get

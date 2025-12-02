@@ -8,14 +8,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # ← الحل السحري: action جديد بيجيب Flutter أحدث دايمًا
       - name: Setup Flutter
-        uses: subosito/flutter-action@v2
+        uses: verygoodventures/flutter-action@v2
         with:
-          flutter-version: '3.27.0'  # ← Dart 3.9.2 متوافق مع ^3.9.2
           channel: stable
           cache: true
 
-      - name: Install dependencies
+      - name: Get packages
         run: flutter pub get
 
       - name: Build IPA

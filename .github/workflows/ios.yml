@@ -8,10 +8,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # ← الحل السحري: action جديد بيجيب Flutter أحدث دايمًا
       - name: Setup Flutter
-        uses: verygoodventures/flutter-action@v2
+        uses: VeryGoodOpenSource/flutter-action@v2  # ← الاسم الصحيح
         with:
+          flutter-version: '3.30.0'  # Dart 3.10.0 (مضمون)
           channel: stable
           cache: true
 

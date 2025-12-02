@@ -1,30 +1,34 @@
 name: Build & Upload iOS
 
-on: [push, workflow_dispatch]
+on:
+  push:
+    tags:
+      - 'v*'
 
 jobs:
-  build:
+  build-and-upload:
     runs-on: macos-14
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - name: Setup Flutter
+      - name: Setup Flutter (Latest Stable)
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.27.0'  # ← Dart 3.9.2 متوافق مع ^3.9.2
           channel: stable
           cache: true
+          # مش هنحدد إصدار خالص – هيجيب أحدث إصدار تلقائي (اللي فيه Dart 3.10+)
 
       - name: Install dependencies
         run: flutter pub get
 
       - name: Build IPA
-        run: flutter build ipa --release
+        run: flutter build ipa --release --no-tree-shake-icons
 
       - name: Upload to App Store Connect
-        uses: apple-actions/upload-testflight-build@v3
+        uses: apple-actions/upload-testflight-build@v1
         with:
-          app-path: 'build/ios/ipa/*.ipa'
+          app-path: build/ios/ipa/*.ipa
           issuer-id: ${{ secrets.APPLE_ISSUER_ID }}
           api-key-id: ${{ secrets.APPLE_KEY_ID }}
-          api-private-key: ${{ secrets.APPLE_PRIVATE_KEY }}
+          api-private-key: ${{ secrets.API_PRIVATE_KEY }}
